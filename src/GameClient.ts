@@ -206,9 +206,9 @@ class GameClient {
         GameMap.ctx.strokeStyle = "black";
         GameMap.ctx.fillStyle = "red";
         GameMap.ctx.rect(GameMap.getWidth() + GameMap.UIWidth / 10, GameMap.getHeight() / 4, GameMap.UIWidth * 0.8, GameMap.getHeight() * 0.025);
-        GameMap.ctx.fillRect(GameMap.getWidth() + GameMap.UIWidth / 10, GameMap.getHeight() / 4, GameMap.UIWidth * 0.8 * (player.hp / player.hpMax), GameMap.getHeight()* 0.025);
+        //GameMap.ctx.fillRect(GameMap.getWidth() + GameMap.UIWidth / 10, GameMap.getHeight() / 4, GameMap.UIWidth * 0.8 * (player.hp / player.hpMax), GameMap.getHeight()* 0.025);
         //Fixed code, but the above code looks more funny
-        //GameMap.ctx.fillRect(GameMap.getWidth() + GameMap.UIWidth / 10, GameMap.getHeight() / 4, GameMap.UIWidth * 0.8 * Math.max(0, (player.hp / player.hpMax)), GameMap.getHeight()* 0.025);
+        GameMap.ctx.fillRect(GameMap.getWidth() + GameMap.UIWidth / 10, GameMap.getHeight() / 4, GameMap.UIWidth * 0.8 * Math.max(0, (player.hp / player.hpMax)), GameMap.getHeight()* 0.025);
         GameMap.ctx.stroke();
     }
     public static drawStats(player: any): void {

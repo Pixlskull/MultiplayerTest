@@ -73,7 +73,7 @@ class Game {
         }, Game.frameTime);
     }
     static gameCycle() {
-        if (Object.keys(Game.enemies).length < 1) {
+        if (Object.keys(Game.enemies).length < 10) {
             Game.createEnemy();
         }
         for (let p in Game.players) {
@@ -98,12 +98,19 @@ class Game {
         Game.players = playerList;
     }
     static findLiving() {
+        let newEnemies = {};
+        for (let j in Game.enemies) {
+            if (Game.enemies[j].isAlive) {
+                newEnemies[j] = Game.enemies[j];
+            }
+        }
         let newBullets = {};
         for (let j in Game.bullets) {
             if (Game.bullets[j].isAlive) {
                 newBullets[j] = Game.bullets[j];
             }
         }
+        Game.enemies = newEnemies;
         Game.bullets = newBullets;
     }
     static collisionUpdate() {
@@ -159,7 +166,7 @@ class Game {
         }
     }
     static createEnemy() {
-        let spawnPoint = Game.findLocation(0, 5);
+        let spawnPoint = Game.findLocation(0, 100);
         if (spawnPoint !== null) {
             const newID = uuid_1.v4();
             Game.enemies[newID] = new index_js_1.Zombie(spawnPoint, newID);
@@ -174,7 +181,7 @@ class Game {
         if (attemptNum > 20) {
             return null;
         }
-        const testLocation = new index_js_1.Vector(randomInt(index_js_1.GameMap.HALF_DIMENSION + radius, index_js_1.GameMap.HALF_DIMENSION - radius), randomInt(index_js_1.GameMap.HALF_DIMENSION + radius, index_js_1.GameMap.HALF_DIMENSION - radius));
+        const testLocation = new index_js_1.Vector(randomInt(radius, index_js_1.GameMap.HALF_DIMENSION * 2 - radius), randomInt(radius, index_js_1.GameMap.HALF_DIMENSION * 2 - radius));
         let goodLocation = true;
         for (let p in Game.players) {
             if (testLocation.distance(Game.players[p]) < 60) {

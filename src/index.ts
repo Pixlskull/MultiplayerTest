@@ -15,7 +15,9 @@ import { FastBullet } from "./FastBullet.js";
 import { Weapon, WeaponType } from "./weapons/Weapon";
 import { Sniper } from "./weapons/Sniper";
 import { Sword } from "./weapons/Sword";
+import { Gun } from "./weapons/Gun";
+import { SuperWeapon } from "./weapons/SuperWeapon";
 
 export { GameObject, Controls, Vector, GameMap, Enemy, EnemyType,
     Bullet, Player, PlayerContainer, BulletContainer, EnemyContainer, AABB, QuadTree, 
-    FastBullet, Weapon, WeaponType, Sniper, Sword, Zombie};
+    FastBullet, Weapon, WeaponType, Sniper, Sword, Gun, Zombie, SuperWeapon };

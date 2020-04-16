@@ -6,19 +6,25 @@ export class Bullet extends GameObject{
     public lifetime: number;
     public type: string;
     public hp: number;
+    public firstTick: boolean;
 
-    constructor(position: Vector, velocity: Vector, id: string, hp: number = 1){
+    constructor(position: Vector, velocity: Vector, id: string, hp: number = 1, maxVel: number = 10){
         super(position);
         this.id = id;
         this.velocity = velocity;
-        this.maxVelocity = 10;
+        this.maxVelocity = maxVel;
         this.normalizeVelocity();
         this.hp = hp;
         this.lifetime = 1000;
         this.type = "bullet";
         this.damage = 1;
+        this.firstTick = true;
     }
     public update(): void {
+        if (this.firstTick){
+            this.firstTick = false;
+            return;
+        }
         this.position.x += this.velocity.x * this.maxVelocity;
         this.position.y += this.velocity.y * this.maxVelocity;
         this.wallCollision();

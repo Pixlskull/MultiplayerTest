@@ -12,7 +12,7 @@ class Player extends index_js_1.GameObject {
         this.hpMax = this.hp;
         //todo: enum
         this.type = "player";
-        this.weapon = new index_js_1.Sniper(id);
+        this.weapon = new index_js_1.SuperWeapon(id);
     }
     update() {
         this.position.x += this.velocity.x * this.maxVelocity;

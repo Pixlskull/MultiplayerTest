@@ -2,18 +2,23 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
 class Bullet extends index_js_1.GameObject {
-    constructor(position, velocity, id, hp = 1) {
+    constructor(position, velocity, id, hp = 1, maxVel = 10) {
         super(position);
         this.id = id;
         this.velocity = velocity;
-        this.maxVelocity = 10;
+        this.maxVelocity = maxVel;
         this.normalizeVelocity();
         this.hp = hp;
         this.lifetime = 1000;
         this.type = "bullet";
         this.damage = 1;
+        this.firstTick = true;
     }
     update() {
+        if (this.firstTick) {
+            this.firstTick = false;
+            return;
+        }
         this.position.x += this.velocity.x * this.maxVelocity;
         this.position.y += this.velocity.y * this.maxVelocity;
         this.wallCollision();

@@ -64,7 +64,7 @@ class GameClient {
         for (let j in data) {
             //really bad method of checking if the object is a Player
             //Sockets can only emit Json and not the class
-            if (data[j].socketID === GameClient.id && data[j].hasOwnProperty("connected")) {
+            if (data[j].id === GameClient.id && data[j].hasOwnProperty("connected")) {
                 self = data[j];
             }
         }
@@ -201,9 +201,9 @@ class GameClient {
         index_js_1.GameMap.ctx.strokeStyle = "black";
         index_js_1.GameMap.ctx.fillStyle = "red";
         index_js_1.GameMap.ctx.rect(index_js_1.GameMap.getWidth() + index_js_1.GameMap.UIWidth / 10, index_js_1.GameMap.getHeight() / 4, index_js_1.GameMap.UIWidth * 0.8, index_js_1.GameMap.getHeight() * 0.025);
-        index_js_1.GameMap.ctx.fillRect(index_js_1.GameMap.getWidth() + index_js_1.GameMap.UIWidth / 10, index_js_1.GameMap.getHeight() / 4, index_js_1.GameMap.UIWidth * 0.8 * (player.hp / player.hpMax), index_js_1.GameMap.getHeight() * 0.025);
+        //GameMap.ctx.fillRect(GameMap.getWidth() + GameMap.UIWidth / 10, GameMap.getHeight() / 4, GameMap.UIWidth * 0.8 * (player.hp / player.hpMax), GameMap.getHeight()* 0.025);
         //Fixed code, but the above code looks more funny
-        //GameMap.ctx.fillRect(GameMap.getWidth() + GameMap.UIWidth / 10, GameMap.getHeight() / 4, GameMap.UIWidth * 0.8 * Math.max(0, (player.hp / player.hpMax)), GameMap.getHeight()* 0.025);
+        index_js_1.GameMap.ctx.fillRect(index_js_1.GameMap.getWidth() + index_js_1.GameMap.UIWidth / 10, index_js_1.GameMap.getHeight() / 4, index_js_1.GameMap.UIWidth * 0.8 * Math.max(0, (player.hp / player.hpMax)), index_js_1.GameMap.getHeight() * 0.025);
         index_js_1.GameMap.ctx.stroke();
     }
     static drawStats(player) {

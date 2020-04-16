@@ -80,7 +80,7 @@ class Game {
         }, Game.frameTime);
     }
     public static gameCycle(): void {
-        if (Object.keys(Game.enemies).length < 1) {
+        if (Object.keys(Game.enemies).length < 10) {
             Game.createEnemy();
         }
         for (let p in Game.players) {
@@ -105,12 +105,19 @@ class Game {
         Game.players = playerList;
     }
     public static findLiving(): void {
+        let newEnemies: EnemyContainer = {};
+        for (let j in Game.enemies) {
+            if (Game.enemies[j].isAlive) {
+                newEnemies[j] = Game.enemies[j];
+            }
+        }
         let newBullets: BulletContainer = {};
         for (let j in Game.bullets) {
             if (Game.bullets[j].isAlive) {
                 newBullets[j] = Game.bullets[j];
             }
         }
+        Game.enemies = newEnemies;
         Game.bullets = newBullets;
     }
     public static collisionUpdate(): void {
@@ -172,7 +179,7 @@ class Game {
     }
 
     public static createEnemy(): boolean {
-        let spawnPoint: any = Game.findLocation(0, 5);
+        let spawnPoint: any = Game.findLocation(0, 100);
         if (spawnPoint !== null) {
             const newID: string = v4();
             Game.enemies[newID] = new Zombie(spawnPoint, newID);
@@ -191,8 +198,8 @@ class Game {
         }
 
         const testLocation: Vector = new Vector(
-            randomInt(GameMap.HALF_DIMENSION + radius, GameMap.HALF_DIMENSION - radius),
-            randomInt(GameMap.HALF_DIMENSION + radius, GameMap.HALF_DIMENSION - radius)
+            randomInt(radius, GameMap.HALF_DIMENSION*2 - radius),
+            randomInt(radius, GameMap.HALF_DIMENSION*2 - radius)
         );
 
         let goodLocation: boolean = true;

@@ -1,4 +1,5 @@
-import { GameMap, GameObject, Vector, Controls, Bullet, BulletContainer, Weapon, Sniper } from "./index.js";
+import { GameMap, GameObject, Vector, Controls, Bullet, 
+    BulletContainer, Weapon, Sniper, SuperWeapon } from "./index.js";
 
 export class Player extends GameObject {
     public id: string;
@@ -21,7 +22,7 @@ export class Player extends GameObject {
         this.hpMax = this.hp;
         //todo: enum
         this.type = "player"
-        this.weapon = new Sniper(id);
+        this.weapon = new SuperWeapon(id);
     }
     public update(): void {
         this.position.x += this.velocity.x * this.maxVelocity;

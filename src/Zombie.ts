@@ -1,5 +1,5 @@
 import { GameObject, Controls, Vector, GameMap, Weapon, PlayerContainer, 
-    Player, BulletContainer, Enemy, EnemyType, Sniper } from "./index.js";
+    Player, BulletContainer, Enemy, EnemyType, Gun } from "./index.js";
 
 export class Zombie extends Enemy {
     public position: Vector;
@@ -15,13 +15,12 @@ export class Zombie extends Enemy {
 
     constructor(position: Vector, id: string) {
         super(position)
-        console.log(this.position);
-        this.radius = 10;
+        this.radius = 15;
         this.maxVelocity = 3;
         this.hp = 10;
         this.type = EnemyType.ZOMBIE;
         this.id = id;
-        this.weapon = new Sniper(this.id, 1, 1000, 5);
+        this.weapon = new Gun(this.id, 1, 1000, 5);
         this.target = null;
     }
     public reloadCheck(): boolean {
@@ -51,7 +50,9 @@ export class Zombie extends Enemy {
         let smallestValue: number = Number.POSITIVE_INFINITY;
         let currentP: string = null;
         for (let p in players){
-            if (this.getDistance(players[p]) < smallestValue){
+            let currentDist: number = this.getDistance(players[p]);
+            if (currentDist < smallestValue){
+                smallestValue = currentDist;
                 currentP = p;
             }
         }

@@ -4,13 +4,12 @@ const index_js_1 = require("./index.js");
 class Zombie extends index_js_1.Enemy {
     constructor(position, id) {
         super(position);
-        console.log(this.position);
-        this.radius = 10;
+        this.radius = 15;
         this.maxVelocity = 3;
         this.hp = 10;
         this.type = index_js_1.EnemyType.ZOMBIE;
         this.id = id;
-        this.weapon = new index_js_1.Sniper(this.id, 1, 1000, 5);
+        this.weapon = new index_js_1.Gun(this.id, 1, 1000, 5);
         this.target = null;
     }
     reloadCheck() {
@@ -39,7 +38,9 @@ class Zombie extends index_js_1.Enemy {
         let smallestValue = Number.POSITIVE_INFINITY;
         let currentP = null;
         for (let p in players) {
-            if (this.getDistance(players[p]) < smallestValue) {
+            let currentDist = this.getDistance(players[p]);
+            if (currentDist < smallestValue) {
+                smallestValue = currentDist;
                 currentP = p;
             }
         }

@@ -2,10 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
 class FastBullet extends index_js_1.Bullet {
-    constructor(position, velocity, id, bulletCount, maxVel = 50) {
-        super(position, velocity, id, bulletCount);
+    constructor(position, velocity, id, hp, maxVel = 50) {
+        super(position, velocity, id, hp, maxVel);
         this.radius = 2;
-        this.maxVelocity = maxVel;
         this.type = "fastbullet";
     }
     wallCollision() {

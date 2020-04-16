@@ -4,16 +4,14 @@ export class FastBullet extends Bullet{
     public position: Vector;
     public velocity: Vector;
     public id: string;
-    public bulletCount: number;
     public lifetime: number;
     public maxVelocity: number;
     public radius: number;
     public type: string;
 
-    constructor(position: Vector, velocity: Vector, id: string, bulletCount: number, maxVel: number = 50){
-        super(position, velocity, id, bulletCount);
+    constructor(position: Vector, velocity: Vector, id: string, hp: number, maxVel: number = 50){
+        super(position, velocity, id, hp, maxVel);
         this.radius = 2;
-        this.maxVelocity = maxVel;
         this.type = "fastbullet";
     }
     public wallCollision(): void{
