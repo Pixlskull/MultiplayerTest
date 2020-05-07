@@ -14,6 +14,21 @@ class Vector {
     get magnitude() {
         return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
     }
+    normalize() {
+        const magnitude = this.magnitude;
+        if (magnitude !== 0) {
+            this.x = this.x / magnitude;
+            this.y = this.y / magnitude;
+        }
+    }
+    cPerpRotation() {
+        //clockwise Perpendicular rotation
+        return new Vector(this.y, -this.x);
+    }
+    cCPerpRotation() {
+        //counterClockwise Perpendicular rotation
+        return new Vector(-this.y, this.x);
+    }
     clone() {
         return new Vector(this.x, this.y);
     }
@@ -23,14 +38,57 @@ class Vector {
     getAngle() {
         return Math.atan2(this.y, this.x);
     }
-    subtract(v) {
-        this.x -= v.x;
-        this.y -= v.y;
+    add(a, b) {
+        if (a instanceof Vector) {
+            this.x += a.x;
+            this.y += a.y;
+        }
+        else {
+            this.x += a;
+            this.y += (b != null) ? b : a;
+        }
         return this;
     }
-    set(x, y) {
-        this.x = x;
-        this.y = y;
+    subtract(a, b) {
+        if (a instanceof Vector) {
+            this.x -= a.x;
+            this.y -= a.y;
+        }
+        else {
+            this.x -= a;
+            this.y -= (b != null) ? b : a;
+        }
+        return this;
+    }
+    multiply(a, b) {
+        if (a instanceof Vector) {
+            this.x *= a.x;
+            this.y *= a.y;
+        }
+        else {
+            this.x *= a;
+            this.y *= (b != null) ? b : a;
+        }
+        return this;
+    }
+    scaleTo(a, b) {
+        this.normalize();
+        if (b === null) {
+            return this.multiply(a);
+        }
+        else {
+            return this.multiply(a, b);
+        }
+    }
+    set(a, b) {
+        if (a instanceof Vector) {
+            this.x = a.x;
+            this.y = a.y;
+        }
+        else {
+            this.x = a;
+            this.y = (b != null) ? b : a;
+        }
         return this;
     }
     distance(a) {

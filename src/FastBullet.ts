@@ -1,8 +1,8 @@
-import { GameMap, Vector, GameObject, Player, Bullet } from "./index.js";
+import { GameMap, Vector, GameObject, Player, Bullet, BulletType } from "./index.js";
 
 export class FastBullet extends Bullet{
     public position: Vector;
-    public velocity: Vector;
+    public direction: Vector;
     public id: string;
     public lifetime: number;
     public maxVelocity: number;
@@ -12,29 +12,12 @@ export class FastBullet extends Bullet{
     constructor(position: Vector, velocity: Vector, id: string, hp: number, maxVel: number = 50){
         super(position, velocity, id, hp, maxVel);
         this.radius = 2;
-        this.type = "fastbullet";
+        this.type = BulletType.FAST;
     }
-    public wallCollision(): void{
-        if (this.position.x - this.radius < 0) {
-            this.velocity.x = -this.velocity.x; 
-            this.position.x = 0 + this.radius;
-        }
-        else if (this.position.x + this.radius > GameMap.HALF_DIMENSION*2) {
-            this.velocity.x = -this.velocity.x; 
-            this.position.x = GameMap.HALF_DIMENSION*2 - this.radius;
-        }
-        if (this.position.y - this.radius < 0) {
-            this.velocity.y = -this.velocity.y; 
-            this.position.y = 0 + this.radius;
-        }
-        else if (this.position.y + this.radius > GameMap.HALF_DIMENSION*2) {
-            this.velocity.y = -this.velocity.y;
-            this.position.y = GameMap.HALF_DIMENSION*2 - this.radius;
-        }
-    }
+    
     public collisionCheck(object: GameObject): boolean{
-        const endX = this.position.x + this.velocity.x * this.maxVelocity;
-        const endY = this.position.y + this.velocity.y * this.maxVelocity;
+        const endX = this.position.x + this.velocity.x;
+        const endY = this.position.y + this.velocity.y;
         const endPos = new Vector(endX, endY);
         return this.pointLineDistanceSquared(this.position, endPos, object.position) < object.getRadius()**2;
     }

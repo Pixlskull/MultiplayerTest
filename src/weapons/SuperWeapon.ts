@@ -10,7 +10,7 @@ export class SuperWeapon extends Weapon{
     public bulletCount: number;
     public bullets: BulletContainer;
 
-    constructor(owner: string, damage: number = 10, cooldown: number = 1, bulletVelocity: number = 30){
+    constructor(owner: string, damage: number = 20, cooldown: number = 1, bulletVelocity: number = 30){
         super(owner);
         this.damage = damage;
         this.cooldown = cooldown;
@@ -20,12 +20,12 @@ export class SuperWeapon extends Weapon{
         this.bullets = {};
     }
 
-    public fireWeapon(selfPos: Vector, targetPos: Vector): BulletContainer {
+    public fireWeapon(selfPos: Vector, targetDir: Vector): BulletContainer {
         const bullets: any = {};
         const id = v4()
         this.bulletCount += 1;
         this.lastFired = new Date();
-        bullets[id] = new FastBullet(selfPos, new Vector(targetPos.x, targetPos.y), this.owner, 10, this.bulletVelocity)
+        bullets[id] = new FastBullet(selfPos, targetDir.clone(), this.owner, 10, this.bulletVelocity)
         return bullets;
     }
 

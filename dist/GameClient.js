@@ -76,8 +76,8 @@ class GameClient {
             const deltaY = gameObj.position.y - centerY;
             const cRadius = gameObj.radius;
             if (gameObj.type === "fastbullet") {
-                const endX = deltaX + gameObj.velocity.x * gameObj.maxVelocity;
-                const endY = deltaY + gameObj.velocity.y * gameObj.maxVelocity;
+                const endX = deltaX + gameObj.direction.x * gameObj.maxVelocity;
+                const endY = deltaY + gameObj.direction.y * gameObj.maxVelocity;
                 if (gameObj.isCollided) {
                     index_js_1.GameMap.ctx.beginPath();
                     index_js_1.GameMap.ctx.strokeStyle = "red";
@@ -139,9 +139,9 @@ class GameClient {
                 const deltaX = gameObj.position.x - centerX;
                 const deltaY = gameObj.position.y - centerY;
                 const cRadius = gameObj.radius;
-                if (gameObj.type === "fastbullet") {
-                    const endX = deltaX + gameObj.velocity.x * gameObj.maxVelocity;
-                    const endY = deltaY + gameObj.velocity.y * gameObj.maxVelocity;
+                if (gameObj.type === index_js_1.BulletType.FAST) {
+                    const endX = deltaX + gameObj.direction.x * gameObj.maxVelocity;
+                    const endY = deltaY + gameObj.direction.y * gameObj.maxVelocity;
                     if (gameObj.isCollided) {
                         index_js_1.GameMap.ctx.beginPath();
                         index_js_1.GameMap.ctx.strokeStyle = "red";
@@ -151,9 +151,31 @@ class GameClient {
                     }
                     else {
                         index_js_1.GameMap.ctx.beginPath();
-                        index_js_1.GameMap.ctx.strokeStyle = "black";
+                        index_js_1.GameMap.ctx.strokeStyle = "blue";
                         index_js_1.GameMap.ctx.moveTo(deltaX, deltaY);
                         index_js_1.GameMap.ctx.lineTo(endX, endY);
+                        index_js_1.GameMap.ctx.stroke();
+                    }
+                }
+                else if (gameObj.type === index_js_1.BulletType.LINE) {
+                    const currPos = new index_js_1.Vector(deltaX, deltaY);
+                    const currVel = new index_js_1.Vector(gameObj.direction.x, gameObj.direction.y);
+                    const direction1 = currVel.cPerpRotation().multiply(new index_js_1.Vector(gameObj.width / 2, gameObj.width / 2));
+                    const direction2 = currVel.cCPerpRotation().multiply(new index_js_1.Vector(gameObj.width / 2, gameObj.width / 2));
+                    const end1 = currPos.clone().add(direction1);
+                    const end2 = currPos.clone().add(direction2);
+                    if (gameObj.isCollided) {
+                        index_js_1.GameMap.ctx.beginPath();
+                        index_js_1.GameMap.ctx.strokeStyle = "red";
+                        index_js_1.GameMap.ctx.moveTo(end1.x, end1.y);
+                        index_js_1.GameMap.ctx.lineTo(end2.x, end2.y);
+                        index_js_1.GameMap.ctx.stroke();
+                    }
+                    else {
+                        index_js_1.GameMap.ctx.beginPath();
+                        index_js_1.GameMap.ctx.strokeStyle = "black";
+                        index_js_1.GameMap.ctx.moveTo(end1.x, end1.y);
+                        index_js_1.GameMap.ctx.lineTo(end2.x, end2.y);
                         index_js_1.GameMap.ctx.stroke();
                     }
                 }

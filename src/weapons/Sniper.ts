@@ -20,12 +20,12 @@ export class Sniper extends Weapon{
         this.bullets = {};
     }
 
-    public fireWeapon(selfPos: Vector, targetPos: Vector): BulletContainer {
+    public fireWeapon(selfPos: Vector, targetDir: Vector): BulletContainer {
         const bullets: any = {};
         const id = v4()
         this.bulletCount += 1;
         this.lastFired = new Date();
-        bullets[id] = new FastBullet(selfPos, new Vector(targetPos.x, targetPos.y), this.owner, 1, this.bulletVelocity)
+        bullets[id] = new FastBullet(selfPos, targetDir, this.owner, 1, this.bulletVelocity)
         return bullets;
     }
 

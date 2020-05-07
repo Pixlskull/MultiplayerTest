@@ -30,7 +30,9 @@ class Game {
             Game.newPlayer(socket.id);
             socket.emit("id", socket.id);
             socket.on("userInput", function (controls) {
-                Game.updatePlayer(socket.id, controls);
+                const newControls = Object.create(index_js_1.Controls.prototype, Object.getOwnPropertyDescriptors(controls));
+                newControls.mousePosition = Object.create(index_js_1.Vector.prototype, Object.getOwnPropertyDescriptors(controls.mousePosition));
+                Game.updatePlayer(socket.id, newControls);
             });
             socket.on("disconnect", function (reason) {
                 console.log("disconnect");
@@ -73,7 +75,7 @@ class Game {
         }, Game.frameTime);
     }
     static gameCycle() {
-        if (Object.keys(Game.enemies).length < 10) {
+        if (Object.keys(Game.enemies).length < Game.enemyLimit) {
             Game.createEnemy();
         }
         for (let p in Game.players) {
@@ -132,9 +134,11 @@ class Game {
             let foundObjects = quadTree.queryRange(searchedAABB);
             for (let p in combined) {
                 const cObject = combined[p];
-                if (cBullet.collisionCheck(cObject)) {
+                //lol the first time I did collision check and then factionCheck
+                //terrible, literally doing more than needed
+                if (cBullet.factionCheck(cObject)) {
                     //do something
-                    if (cBullet.factionCheck(cObject)) {
+                    if (cBullet.collisionCheck(cObject)) {
                         cBullet.isCollided = true;
                         cObject.isCollided = true;
                         cBullet.takeDamage(cObject);
@@ -166,7 +170,7 @@ class Game {
         }
     }
     static createEnemy() {
-        let spawnPoint = Game.findLocation(0, 100);
+        let spawnPoint = Game.findLocation(0, 50);
         if (spawnPoint !== null) {
             const newID = uuid_1.v4();
             Game.enemies[newID] = new index_js_1.Zombie(spawnPoint, newID);
@@ -175,6 +179,7 @@ class Game {
         return false;
     }
     static findLocation(attemptNum, radius) {
+        //radius = distance from the edge of the map;
         function randomInt(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
@@ -184,7 +189,7 @@ class Game {
         const testLocation = new index_js_1.Vector(randomInt(radius, index_js_1.GameMap.HALF_DIMENSION * 2 - radius), randomInt(radius, index_js_1.GameMap.HALF_DIMENSION * 2 - radius));
         let goodLocation = true;
         for (let p in Game.players) {
-            if (testLocation.distance(Game.players[p]) < 60) {
+            if (testLocation.distance(Game.players[p]) < Game.safeRadius) {
                 goodLocation = false;
                 break;
             }
@@ -208,5 +213,7 @@ class Game {
 }
 Game.port = 8080;
 Game.frameTime = 1000 / 60;
+Game.enemyLimit = 0;
+Game.safeRadius = 250;
 Game.init();
 //# sourceMappingURL=Game.js.map

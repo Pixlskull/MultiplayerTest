@@ -6,7 +6,7 @@ export enum EnemyType {
 export abstract class Enemy extends GameObject {
     public position: Vector;
     public radius: number
-    public velocity: Vector;
+    public direction: Vector;
     public maxVelocity: number;
     public damage: number;
     public abstract id: string;
@@ -21,26 +21,26 @@ export abstract class Enemy extends GameObject {
 
     public update(players: PlayerContainer): void {
         this.ai(players);
-        this.position.x += this.velocity.x * this.maxVelocity;
-        this.position.y += this.velocity.y * this.maxVelocity;
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
         this.wallCollision();
     }
 
     public wallCollision(): void{
         if (this.position.x - this.radius < 0) {
-            this.velocity.x = 0; 
+            this.direction.x = 0; 
             this.position.x = 0 + this.radius;
         }
         else if (this.position.x + this.radius > GameMap.HALF_DIMENSION*2) {
-            this.velocity.x = 0; 
+            this.direction.x = 0; 
             this.position.x = GameMap.HALF_DIMENSION*2 - this.radius;
         }
         if (this.position.y - this.radius < 0) {
-            this.velocity.y = 0; 
+            this.direction.y = 0; 
             this.position.y = 0 + this.radius;
         }
         else if (this.position.y + this.radius > GameMap.HALF_DIMENSION*2) {
-            this.velocity.y = 0;
+            this.direction.y = 0;
             this.position.y = GameMap.HALF_DIMENSION*2 - this.radius;
         }
     }

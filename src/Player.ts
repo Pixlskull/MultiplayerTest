@@ -1,5 +1,5 @@
 import { GameMap, GameObject, Vector, Controls, Bullet, 
-    BulletContainer, Weapon, Sniper, SuperWeapon } from "./index.js";
+    BulletContainer, Weapon, Sniper, SuperWeapon, Sword } from "./index.js";
 
 export class Player extends GameObject {
     public id: string;
@@ -22,46 +22,46 @@ export class Player extends GameObject {
         this.hpMax = this.hp;
         //todo: enum
         this.type = "player"
-        this.weapon = new SuperWeapon(id);
+        //this.weapon = new SuperWeapon(id);
+        this.weapon = new Sword(id);
     }
     public update(): void {
-        this.position.x += this.velocity.x * this.maxVelocity;
-        this.position.y += this.velocity.y * this.maxVelocity;
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
         this.wallCollision();
     }
     public updateMovement(controls: Controls): void {
-        const maxVelocity = this.maxVelocity
-        this.velocity.reset();
+        this.direction.reset();
         if (controls.left === true) {
-            this.velocity.x -= maxVelocity;
+            this.direction.x -= 1;
         }
         if (controls.right === true) {
-            this.velocity.x += maxVelocity;
+            this.direction.x += 1;
         }
         if (controls.up === true) {
-            this.velocity.y -= maxVelocity;
+            this.direction.y -= 1;
         }
         if (controls.down === true) {
-            this.velocity.y += maxVelocity;
+            this.direction.y += 1;
         }
-        this.normalizeVelocity();
+        this.normalizeDirection();
     }
 
     public wallCollision(): void{
         if (this.position.x - this.radius < 0) {
-            this.velocity.x = 0; 
+            this.direction.x = 0; 
             this.position.x = 0 + this.radius;
         }
         else if (this.position.x + this.radius > GameMap.HALF_DIMENSION*2) {
-            this.velocity.x = 0; 
+            this.direction.x = 0; 
             this.position.x = GameMap.HALF_DIMENSION*2 - this.radius;
         }
         if (this.position.y - this.radius < 0) {
-            this.velocity.y = 0; 
+            this.direction.y = 0; 
             this.position.y = 0 + this.radius;
         }
         else if (this.position.y + this.radius > GameMap.HALF_DIMENSION*2) {
-            this.velocity.y = 0;
+            this.direction.y = 0;
             this.position.y = GameMap.HALF_DIMENSION*2 - this.radius;
         }
     }

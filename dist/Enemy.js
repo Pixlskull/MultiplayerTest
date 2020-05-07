@@ -11,25 +11,25 @@ class Enemy extends index_js_1.GameObject {
     }
     update(players) {
         this.ai(players);
-        this.position.x += this.velocity.x * this.maxVelocity;
-        this.position.y += this.velocity.y * this.maxVelocity;
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
         this.wallCollision();
     }
     wallCollision() {
         if (this.position.x - this.radius < 0) {
-            this.velocity.x = 0;
+            this.direction.x = 0;
             this.position.x = 0 + this.radius;
         }
         else if (this.position.x + this.radius > index_js_1.GameMap.HALF_DIMENSION * 2) {
-            this.velocity.x = 0;
+            this.direction.x = 0;
             this.position.x = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
         }
         if (this.position.y - this.radius < 0) {
-            this.velocity.y = 0;
+            this.direction.y = 0;
             this.position.y = 0 + this.radius;
         }
         else if (this.position.y + this.radius > index_js_1.GameMap.HALF_DIMENSION * 2) {
-            this.velocity.y = 0;
+            this.direction.y = 0;
             this.position.y = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
         }
     }

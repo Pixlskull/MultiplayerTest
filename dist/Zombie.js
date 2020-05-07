@@ -19,8 +19,8 @@ class Zombie extends index_js_1.Enemy {
         if (players.hasOwnProperty(this.target)) {
             let target = players[this.target];
             if (players[this.target] !== undefined) {
-                this.velocity = new index_js_1.Vector(target.position.x - this.position.x, target.position.y - this.position.y);
-                this.normalizeVelocity();
+                this.direction = new index_js_1.Vector(target.position.x - this.position.x, target.position.y - this.position.y);
+                this.normalizeDirection();
             }
             //I don't feel like typing out players[this.target];
             else {

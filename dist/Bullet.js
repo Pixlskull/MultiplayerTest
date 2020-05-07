@@ -1,13 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
+var BulletType;
+(function (BulletType) {
+    BulletType["FAST"] = "fast";
+    BulletType["LINE"] = "line";
+    BulletType["NORMAL"] = "bullet";
+})(BulletType = exports.BulletType || (exports.BulletType = {}));
 class Bullet extends index_js_1.GameObject {
-    constructor(position, velocity, id, hp = 1, maxVel = 10) {
+    constructor(position, direction, id, hp = 1, maxVel = 10) {
         super(position);
         this.id = id;
-        this.velocity = velocity;
+        this.direction = direction;
         this.maxVelocity = maxVel;
-        this.normalizeVelocity();
+        this.normalizeDirection();
         this.hp = hp;
         this.lifetime = 1000;
         this.type = "bullet";
@@ -19,30 +25,12 @@ class Bullet extends index_js_1.GameObject {
             this.firstTick = false;
             return;
         }
-        this.position.x += this.velocity.x * this.maxVelocity;
-        this.position.y += this.velocity.y * this.maxVelocity;
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
         this.wallCollision();
     }
     factionCheck(object) {
         return !(this.id === object.id);
-    }
-    wallCollision() {
-        if (this.position.x - this.radius < 0) {
-            this.velocity.x = -this.velocity.x;
-            this.position.x = 0 + this.radius;
-        }
-        else if (this.position.x + this.radius > index_js_1.GameMap.HALF_DIMENSION * 2) {
-            this.velocity.x = -this.velocity.x;
-            this.position.x = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
-        }
-        if (this.position.y - this.radius < 0) {
-            this.velocity.y = -this.velocity.y;
-            this.position.y = 0 + this.radius;
-        }
-        else if (this.position.y + this.radius > index_js_1.GameMap.HALF_DIMENSION * 2) {
-            this.velocity.y = -this.velocity.y;
-            this.position.y = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
-        }
     }
     takeDamage(object) {
         this.hp -= (object.getDamage() + 1);

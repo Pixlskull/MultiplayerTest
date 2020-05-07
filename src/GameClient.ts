@@ -1,4 +1,4 @@
-import { Controls, GameMap, Vector, Player } from "./index.js";
+import { Controls, GameMap, Vector, Player, BulletType } from "./index.js";
 
 class GameClient {
     private static socket: any;
@@ -81,8 +81,8 @@ class GameClient {
             const deltaY = gameObj.position.y - centerY
             const cRadius = gameObj.radius
             if (gameObj.type === "fastbullet") {
-                const endX = deltaX + gameObj.velocity.x * gameObj.maxVelocity;
-                const endY = deltaY + gameObj.velocity.y * gameObj.maxVelocity;
+                const endX = deltaX + gameObj.direction.x * gameObj.maxVelocity;
+                const endY = deltaY + gameObj.direction.y * gameObj.maxVelocity;
                 if (gameObj.isCollided) {
                     GameMap.ctx.beginPath();
                     GameMap.ctx.strokeStyle = "red";
@@ -144,9 +144,9 @@ class GameClient {
                 const deltaX = gameObj.position.x - centerX;
                 const deltaY = gameObj.position.y - centerY
                 const cRadius = gameObj.radius
-                if (gameObj.type === "fastbullet") {
-                    const endX = deltaX + gameObj.velocity.x * gameObj.maxVelocity;
-                    const endY = deltaY + gameObj.velocity.y * gameObj.maxVelocity;
+                if (gameObj.type === BulletType.FAST) {
+                    const endX = deltaX + gameObj.direction.x * gameObj.maxVelocity;
+                    const endY = deltaY + gameObj.direction.y * gameObj.maxVelocity;
                     if (gameObj.isCollided) {
                         GameMap.ctx.beginPath();
                         GameMap.ctx.strokeStyle = "red";
@@ -156,9 +156,31 @@ class GameClient {
                     }
                     else {
                         GameMap.ctx.beginPath();
-                        GameMap.ctx.strokeStyle = "black";
+                        GameMap.ctx.strokeStyle = "blue";
                         GameMap.ctx.moveTo(deltaX, deltaY);
                         GameMap.ctx.lineTo(endX, endY);
+                        GameMap.ctx.stroke();
+                    }
+                }
+                else if (gameObj.type === BulletType.LINE){
+                    const currPos: Vector = new Vector(deltaX, deltaY);
+                    const currVel: Vector = new Vector(gameObj.direction.x, gameObj.direction.y);
+                    const direction1: Vector = currVel.cPerpRotation().multiply(new Vector(gameObj.width/2, gameObj.width/2));
+                    const direction2: Vector = currVel.cCPerpRotation().multiply(new Vector(gameObj.width/2, gameObj.width/2));
+                    const end1: Vector = currPos.clone().add(direction1);
+                    const end2: Vector = currPos.clone().add(direction2);
+                    if (gameObj.isCollided) {
+                        GameMap.ctx.beginPath();
+                        GameMap.ctx.strokeStyle = "red";
+                        GameMap.ctx.moveTo(end1.x, end1.y);
+                        GameMap.ctx.lineTo(end2.x, end2.y);
+                        GameMap.ctx.stroke();
+                    }
+                    else {
+                        GameMap.ctx.beginPath();
+                        GameMap.ctx.strokeStyle = "black";
+                        GameMap.ctx.moveTo(end1.x, end1.y);
+                        GameMap.ctx.lineTo(end2.x, end2.y);
                         GameMap.ctx.stroke();
                     }
                 }

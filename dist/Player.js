@@ -12,45 +12,45 @@ class Player extends index_js_1.GameObject {
         this.hpMax = this.hp;
         //todo: enum
         this.type = "player";
-        this.weapon = new index_js_1.SuperWeapon(id);
+        //this.weapon = new SuperWeapon(id);
+        this.weapon = new index_js_1.Sword(id);
     }
     update() {
-        this.position.x += this.velocity.x * this.maxVelocity;
-        this.position.y += this.velocity.y * this.maxVelocity;
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
         this.wallCollision();
     }
     updateMovement(controls) {
-        const maxVelocity = this.maxVelocity;
-        this.velocity.reset();
+        this.direction.reset();
         if (controls.left === true) {
-            this.velocity.x -= maxVelocity;
+            this.direction.x -= 1;
         }
         if (controls.right === true) {
-            this.velocity.x += maxVelocity;
+            this.direction.x += 1;
         }
         if (controls.up === true) {
-            this.velocity.y -= maxVelocity;
+            this.direction.y -= 1;
         }
         if (controls.down === true) {
-            this.velocity.y += maxVelocity;
+            this.direction.y += 1;
         }
-        this.normalizeVelocity();
+        this.normalizeDirection();
     }
     wallCollision() {
         if (this.position.x - this.radius < 0) {
-            this.velocity.x = 0;
+            this.direction.x = 0;
             this.position.x = 0 + this.radius;
         }
         else if (this.position.x + this.radius > index_js_1.GameMap.HALF_DIMENSION * 2) {
-            this.velocity.x = 0;
+            this.direction.x = 0;
             this.position.x = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
         }
         if (this.position.y - this.radius < 0) {
-            this.velocity.y = 0;
+            this.direction.y = 0;
             this.position.y = 0 + this.radius;
         }
         else if (this.position.y + this.radius > index_js_1.GameMap.HALF_DIMENSION * 2) {
-            this.velocity.y = 0;
+            this.direction.y = 0;
             this.position.y = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
         }
     }

@@ -4,7 +4,7 @@ import { GameObject, Controls, Vector, GameMap, Weapon, PlayerContainer,
 export class Zombie extends Enemy {
     public position: Vector;
     public radius: number
-    public velocity: Vector;
+    public direction: Vector;
     public maxVelocity: number;
     public id: string;
     public hp: number;
@@ -30,8 +30,8 @@ export class Zombie extends Enemy {
         if (players.hasOwnProperty(this.target)){
             let target: any = players[this.target];
             if (players[this.target] !== undefined){
-                this.velocity = new Vector(target.position.x - this.position.x, target.position.y - this.position.y);
-                this.normalizeVelocity();
+                this.direction = new Vector(target.position.x - this.position.x, target.position.y - this.position.y);
+                this.normalizeDirection();
             }
             //I don't feel like typing out players[this.target];
             else {

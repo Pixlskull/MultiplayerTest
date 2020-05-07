@@ -6,17 +6,13 @@ class GameObject {
         this.position = position;
         this.radius = 10;
         this.maxVelocity = 5;
-        this.velocity = new index_js_1.Vector();
+        this.direction = new index_js_1.Vector();
         this.isCollided = false;
         this.isAlive = true;
         this.damage = 0;
     }
-    normalizeVelocity() {
-        const magnitude = this.velocity.magnitude;
-        if (magnitude !== 0) {
-            this.velocity.x = this.velocity.x / magnitude;
-            this.velocity.y = this.velocity.y / magnitude;
-        }
+    get velocity() {
+        return this.direction.clone().multiply(this.maxVelocity);
     }
     getPosition() {
         return this.position;
@@ -24,14 +20,24 @@ class GameObject {
     setPosition(x, y) {
         this.position.set(x, y);
     }
+    getDirection() {
+        return this.direction;
+    }
+    setDirection(a, b) {
+        if (a instanceof index_js_1.Vector || b === null) {
+            this.direction.set(a);
+        }
+        else {
+            this.direction.set(a, b);
+        }
+        this.normalizeDirection();
+        return this.direction;
+    }
+    normalizeDirection() {
+        this.direction.normalize();
+    }
     getRadius() {
         return this.radius;
-    }
-    getVelocity() {
-        return this.velocity;
-    }
-    setVelocity(x, y) {
-        this.velocity.set(x, y);
     }
     getDistance(a) {
         return Math.sqrt(Math.pow((this.position.x - a.position.x), 2) + Math.pow((this.position.y - a.position.y), 2));
@@ -53,6 +59,25 @@ class GameObject {
             this.isAlive = false;
         }
         return this.isAlive;
+    }
+    wallCollision() {
+        //Default behavior is to have objects "bounce" off walls
+        if (this.position.x - this.radius < 0) {
+            this.direction.x = -this.direction.x;
+            this.position.x = 0 + this.radius;
+        }
+        else if (this.position.x + this.radius > index_js_1.GameMap.HALF_DIMENSION * 2) {
+            this.direction.x = -this.direction.x;
+            this.position.x = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
+        }
+        if (this.position.y - this.radius < 0) {
+            this.direction.y = -this.direction.y;
+            this.position.y = 0 + this.radius;
+        }
+        else if (this.position.y + this.radius > index_js_1.GameMap.HALF_DIMENSION * 2) {
+            this.direction.y = -this.direction.y;
+            this.position.y = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
+        }
     }
 }
 exports.GameObject = GameObject;

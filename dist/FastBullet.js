@@ -5,29 +5,11 @@ class FastBullet extends index_js_1.Bullet {
     constructor(position, velocity, id, hp, maxVel = 50) {
         super(position, velocity, id, hp, maxVel);
         this.radius = 2;
-        this.type = "fastbullet";
-    }
-    wallCollision() {
-        if (this.position.x - this.radius < 0) {
-            this.velocity.x = -this.velocity.x;
-            this.position.x = 0 + this.radius;
-        }
-        else if (this.position.x + this.radius > index_js_1.GameMap.HALF_DIMENSION * 2) {
-            this.velocity.x = -this.velocity.x;
-            this.position.x = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
-        }
-        if (this.position.y - this.radius < 0) {
-            this.velocity.y = -this.velocity.y;
-            this.position.y = 0 + this.radius;
-        }
-        else if (this.position.y + this.radius > index_js_1.GameMap.HALF_DIMENSION * 2) {
-            this.velocity.y = -this.velocity.y;
-            this.position.y = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
-        }
+        this.type = index_js_1.BulletType.FAST;
     }
     collisionCheck(object) {
-        const endX = this.position.x + this.velocity.x * this.maxVelocity;
-        const endY = this.position.y + this.velocity.y * this.maxVelocity;
+        const endX = this.position.x + this.velocity.x;
+        const endY = this.position.y + this.velocity.y;
         const endPos = new index_js_1.Vector(endX, endY);
         return this.pointLineDistanceSquared(this.position, endPos, object.position) < Math.pow(object.getRadius(), 2);
     }

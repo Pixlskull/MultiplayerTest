@@ -3,6 +3,7 @@ import { GameMap, GameObject, Vector, Controls, Bullet, BulletContainer } from "
 export enum WeaponType {
     SNIPER = "sniper",
     SWORD = "sword",
+    SUPERWEAPON = "superWeapon"
 }
 
 export abstract class Weapon {
@@ -18,7 +19,7 @@ export abstract class Weapon {
         this.owner = owner;
     }
 
-    abstract fireWeapon(startPos: Vector, targetPos: Vector): BulletContainer;
+    abstract fireWeapon(startPos: Vector, targetDir: Vector): BulletContainer;
 
     public reloadCheck(): boolean {
         const currentTime: Date = new Date();

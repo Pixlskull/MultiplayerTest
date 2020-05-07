@@ -4,6 +4,7 @@ var WeaponType;
 (function (WeaponType) {
     WeaponType["SNIPER"] = "sniper";
     WeaponType["SWORD"] = "sword";
+    WeaponType["SUPERWEAPON"] = "superWeapon";
 })(WeaponType = exports.WeaponType || (exports.WeaponType = {}));
 class Weapon {
     constructor(owner) {
