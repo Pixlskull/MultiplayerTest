@@ -7,12 +7,13 @@ export enum BulletType {
 }
 
 export class Bullet extends GameObject{
-    public direction: Vector;
+    //public direction: Vector;
     public id: string;
     public lifetime: number;
     public type: string;
     public hp: number;
     public firstTick: boolean;
+    public birthTime: Date;
 
     constructor(position: Vector, direction: Vector, id: string, hp: number = 1, maxVel: number = 10){
         super(position);
@@ -21,10 +22,11 @@ export class Bullet extends GameObject{
         this.maxVelocity = maxVel;
         this.normalizeDirection();
         this.hp = hp;
-        this.lifetime = 1000;
+        this.lifetime = 400000;
         this.type = "bullet";
         this.damage = 1;
         this.firstTick = true;
+        this.birthTime = new Date();
     }
     public update(): void {
         if (this.firstTick){
@@ -34,6 +36,16 @@ export class Bullet extends GameObject{
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
         this.wallCollision();
+        this.lifetimeCheck();
+    }
+    public getBirthTimeNumber(): number {
+        return this.birthTime.getTime();
+    }
+    public lifetimeCheck(): void {
+        const currentTime: Date = new Date();
+        if (currentTime.getTime() - this.getBirthTimeNumber() >= this.lifetime) {
+            this.setIsAlive(false);
+        }
     }
     public factionCheck(object: GameObject): boolean {
         return !(this.id === object.id)

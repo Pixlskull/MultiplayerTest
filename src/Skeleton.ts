@@ -1,19 +1,17 @@
-import {
-    GameObject, Controls, Vector, GameMap, Weapon, PlayerContainer,
-    Player, BulletContainer, Enemy, EnemyType, Gun
-} from "./index.js";
+import { GameObject, Controls, Vector, GameMap, Weapon, PlayerContainer, 
+    Player, BulletContainer, Enemy, EnemyType, Gun } from "./index.js";
 
-export class Zombie extends Enemy {
-    // public position: Vector;
-    // public radius: number
-    // public direction: Vector;
-    // public maxVelocity: number;
-    // public damage: number;
+export class Skeleton extends Enemy {
+    public position: Vector;
+    public radius: number
+    public direction: Vector;
+    public maxVelocity: number;
     public id: string;
     public hp: number;
     public agroRadius: number;
     public type: string;
     public weapon: Weapon;
+    public damage: number;
     public target: string;
     public needTarget: boolean;
 
@@ -21,13 +19,16 @@ export class Zombie extends Enemy {
         super(position)
         this.radius = 15;
         this.maxVelocity = 3;
-        this.hp = 10;
-        this.agroRadius = 300;
-        this.type = EnemyType.ZOMBIE;
+        this.hp = 5;
+        this.agroRadius = 500;
+        this.type = EnemyType.SKELETON;
         this.id = id;
         this.weapon = new Gun(this.id, 1, 1000, 5);
         this.target = null;
         this.needTarget = true;
+    }
+    public reloadCheck(): boolean {
+        return this.weapon.reloadCheck();
     }
     public ai(players: PlayerContainer): void {
         //returns true if Zombie has a target
@@ -39,6 +40,10 @@ export class Zombie extends Enemy {
         else {
             //idk
         }
+    }
+
+    public targetCheck(players: PlayerContainer): boolean {
+        return (players.hasOwnProperty(this.target) && players[this.target] !== undefined);
     }
 
     public attack(players: PlayerContainer): BulletContainer {

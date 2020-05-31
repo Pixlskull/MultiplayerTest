@@ -21,8 +21,8 @@ class Game {
     public static readonly frameTime: number = 1000 / 60;
     public static tick: number;
     public static server: any;
-    public static readonly enemyLimit: number = 0;
-    public static readonly safeRadius: number = 250;
+    public static readonly enemyLimit: number = 1;
+    public static readonly safeRadius: number = 100;
 
     public static init(): void {
         //Starts the server
@@ -137,13 +137,23 @@ class Game {
             Game.bullets[b].isCollided = false;
             quadTree.insert(Game.bullets[b]);
         }
+        for (let e in Game.enemies) {
+            let currEnemy = Game.enemies[e];
+            if (currEnemy.needsTarget()){
+                let searchedAABB = new AABB(currEnemy.getPosition().x, 
+                    currEnemy.getPosition().y, 
+                    currEnemy.getAgroRadius()+ 1
+                );
+                currEnemy.findTarget(quadTree.queryRange(searchedAABB));
+            }
+        }
         for (let b in Game.bullets) {
             const cBullet = Game.bullets[b]
             //The source I found this from used +1 for radius, I guess it doesn't hurt to just check a little bit wider
             let searchedAABB = new AABB(cBullet.position.x, cBullet.position.y, cBullet.radius + 1);
             let foundObjects = quadTree.queryRange(searchedAABB);
-            for (let p in combined) {
-                const cObject = combined[p];
+            for (let p in foundObjects) {
+                const cObject = foundObjects[p];
                 //lol the first time I did collision check and then factionCheck
                 //terrible, literally doing more than needed
                 if (cBullet.factionCheck(cObject)) {
@@ -179,6 +189,7 @@ class Game {
     public static enemyUpdate(enemy: string): void {
         let currEnemy: Enemy = Game.enemies[enemy];
         currEnemy.update(Game.players);
+        //Checks if enemy weapon is reloaded, and that the enemy has a proper target
         if (currEnemy.weapon.reloadCheck() && currEnemy.targetCheck(Game.players)){
             Game.createEnemyBullet(enemy);
         }

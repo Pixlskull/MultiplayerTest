@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
 class Player extends index_js_1.GameObject {
+    //public position: Vector;
+    //public objectType: string;
     constructor(position, id) {
         super(position);
         this.id = id;
@@ -12,8 +14,9 @@ class Player extends index_js_1.GameObject {
         this.hpMax = this.hp;
         //todo: enum
         this.type = "player";
-        //this.weapon = new SuperWeapon(id);
-        this.weapon = new index_js_1.Sword(id);
+        this.objectType = index_js_1.ObjectType.PLAYER;
+        this.weapon = new index_js_1.SuperWeapon(id);
+        //this.weapon = new Sword(id);
     }
     update() {
         this.position.x += this.velocity.x;

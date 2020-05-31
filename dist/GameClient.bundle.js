@@ -40,10 +40,11 @@ class Bullet extends index_js_1.GameObject {
         this.maxVelocity = maxVel;
         this.normalizeDirection();
         this.hp = hp;
-        this.lifetime = 1000;
+        this.lifetime = 400000;
         this.type = "bullet";
         this.damage = 1;
         this.firstTick = true;
+        this.birthTime = new Date();
     }
     update() {
         if (this.firstTick) {
@@ -53,6 +54,16 @@ class Bullet extends index_js_1.GameObject {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
         this.wallCollision();
+        this.lifetimeCheck();
+    }
+    getBirthTimeNumber() {
+        return this.birthTime.getTime();
+    }
+    lifetimeCheck() {
+        const currentTime = new Date();
+        if (currentTime.getTime() - this.getBirthTimeNumber() >= this.lifetime) {
+            this.setIsAlive(false);
+        }
     }
     factionCheck(object) {
         return !(this.id === object.id);
@@ -92,6 +103,7 @@ const index_js_1 = require("./index.js");
 var EnemyType;
 (function (EnemyType) {
     EnemyType["ZOMBIE"] = "zombie";
+    EnemyType["SKELETON"] = "skeleton";
 })(EnemyType = exports.EnemyType || (exports.EnemyType = {}));
 class Enemy extends index_js_1.GameObject {
     constructor(position) {
@@ -126,6 +138,28 @@ class Enemy extends index_js_1.GameObject {
     }
     targetCheck(players) {
         return (players.hasOwnProperty(this.target) && players[this.target] !== undefined);
+    }
+    findTarget(objects) {
+        let smallestValue = this.getAgroRadius();
+        let currentP = null;
+        for (let p in objects) {
+            if (objects[p].getObjectType() === index_js_1.ObjectType.PLAYER) {
+                let currentDist = this.getDistance(objects[p]);
+                if (currentDist < smallestValue) {
+                    smallestValue = currentDist;
+                    currentP = objects[p].getId();
+                }
+            }
+        }
+        if (currentP !== null) {
+            this.target = currentP;
+        }
+    }
+    needsTarget() {
+        return this.needTarget;
+    }
+    getAgroRadius() {
+        return this.agroRadius;
     }
 }
 exports.Enemy = Enemy;
@@ -472,6 +506,14 @@ GameMap.HALF_DIMENSION = 500;
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
+var ObjectType;
+(function (ObjectType) {
+    ObjectType["BULLET"] = "bullet";
+    ObjectType["LINEBULLET"] = "lineBullet";
+    ObjectType["FASTBULLET"] = "fastBullet";
+    ObjectType["PLAYER"] = "player";
+    ObjectType["ZOMBIE"] = "zombie";
+})(ObjectType = exports.ObjectType || (exports.ObjectType = {}));
 class GameObject {
     constructor(position) {
         this.position = position;
@@ -484,6 +526,9 @@ class GameObject {
     }
     get velocity() {
         return this.direction.clone().multiply(this.maxVelocity);
+    }
+    getObjectType() {
+        return this.objectType;
     }
     getPosition() {
         return this.position;
@@ -510,6 +555,27 @@ class GameObject {
     getRadius() {
         return this.radius;
     }
+    getMaxVelocity() {
+        return this.maxVelocity;
+    }
+    getIsAlive() {
+        return this.isAlive;
+    }
+    setIsAlive(state) {
+        this.isAlive = state;
+    }
+    getIsCollided() {
+        return this.isCollided;
+    }
+    getId() {
+        return this.id;
+    }
+    getHp() {
+        return this.hp;
+    }
+    getDamage() {
+        return this.damage;
+    }
     getDistance(a) {
         return Math.sqrt(Math.pow((this.position.x - a.position.x), 2) + Math.pow((this.position.y - a.position.y), 2));
     }
@@ -520,9 +586,6 @@ class GameObject {
         const deltaY = this.position.y - testPosition.y;
         const totalRadius = this.radius + testRadius;
         return (Math.pow(deltaX, 2) + Math.pow(deltaY, 2) <= Math.pow(totalRadius, 2));
-    }
-    getDamage() {
-        return this.damage;
     }
     updateStatus() {
         //Returns false if the object has 0 hp
@@ -643,6 +706,8 @@ exports.LineBullet = LineBullet;
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
 class Player extends index_js_1.GameObject {
+    //public position: Vector;
+    //public objectType: string;
     constructor(position, id) {
         super(position);
         this.id = id;
@@ -653,8 +718,9 @@ class Player extends index_js_1.GameObject {
         this.hpMax = this.hp;
         //todo: enum
         this.type = "player";
-        //this.weapon = new SuperWeapon(id);
-        this.weapon = new index_js_1.Sword(id);
+        this.objectType = index_js_1.ObjectType.PLAYER;
+        this.weapon = new index_js_1.SuperWeapon(id);
+        //this.weapon = new Sword(id);
     }
     update() {
         this.position.x += this.velocity.x;
@@ -947,45 +1013,22 @@ class Zombie extends index_js_1.Enemy {
         this.radius = 15;
         this.maxVelocity = 3;
         this.hp = 10;
+        this.agroRadius = 300;
         this.type = index_js_1.EnemyType.ZOMBIE;
         this.id = id;
         this.weapon = new index_js_1.Gun(this.id, 1, 1000, 5);
         this.target = null;
-    }
-    reloadCheck() {
-        return this.weapon.reloadCheck();
+        this.needTarget = true;
     }
     ai(players) {
-        if (players.hasOwnProperty(this.target)) {
-            let target = players[this.target];
-            if (players[this.target] !== undefined) {
-                this.direction = new index_js_1.Vector(target.position.x - this.position.x, target.position.y - this.position.y);
-                this.normalizeDirection();
-            }
-            //I don't feel like typing out players[this.target];
-            else {
-                this.findTarget(players);
-            }
+        //returns true if Zombie has a target
+        let target = players[this.target];
+        if (players.hasOwnProperty(this.target) && target !== undefined) {
+            this.direction = new index_js_1.Vector(target.position.x - this.position.x, target.position.y - this.position.y);
+            this.normalizeDirection();
         }
         else {
-            this.findTarget(players);
-        }
-    }
-    targetCheck(players) {
-        return (players.hasOwnProperty(this.target) && players[this.target] !== undefined);
-    }
-    findTarget(players) {
-        let smallestValue = Number.POSITIVE_INFINITY;
-        let currentP = null;
-        for (let p in players) {
-            let currentDist = this.getDistance(players[p]);
-            if (currentDist < smallestValue) {
-                smallestValue = currentDist;
-                currentP = p;
-            }
-        }
-        if (currentP !== null) {
-            this.target = currentP;
+            //idk
         }
     }
     attack(players) {
@@ -1005,6 +1048,7 @@ exports.Zombie = Zombie;
 Object.defineProperty(exports, "__esModule", { value: true });
 const GameObject_js_1 = require("./GameObject.js");
 exports.GameObject = GameObject_js_1.GameObject;
+exports.ObjectType = GameObject_js_1.ObjectType;
 const Controls_js_1 = require("./Controls.js");
 exports.Controls = Controls_js_1.Controls;
 const Vector_js_1 = require("./Vector.js");

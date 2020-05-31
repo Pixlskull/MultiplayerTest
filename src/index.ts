@@ -1,4 +1,4 @@
-import { GameObject } from "./GameObject.js";
+import { GameObject, ObjectType } from "./GameObject.js";
 import { Controls } from "./Controls.js";
 import { Vector } from "./Vector.js";
 import { GameMap } from "./GameMap.js";
@@ -23,5 +23,5 @@ import { SuperWeapon } from "./weapons/SuperWeapon";
 export { GameObject, Controls, Vector, GameMap, Enemy, EnemyType,
     Bullet, BulletType,
     Player, PlayerContainer, BulletContainer, EnemyContainer, AABB, Rectangle, 
-    QuadTree, FastBullet, LineBullet,
+    QuadTree, FastBullet, LineBullet, ObjectType,
     Weapon, WeaponType, Sniper, Sword, Gun, Zombie, SuperWeapon };

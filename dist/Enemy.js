@@ -4,6 +4,7 @@ const index_js_1 = require("./index.js");
 var EnemyType;
 (function (EnemyType) {
     EnemyType["ZOMBIE"] = "zombie";
+    EnemyType["SKELETON"] = "skeleton";
 })(EnemyType = exports.EnemyType || (exports.EnemyType = {}));
 class Enemy extends index_js_1.GameObject {
     constructor(position) {
@@ -38,6 +39,28 @@ class Enemy extends index_js_1.GameObject {
     }
     targetCheck(players) {
         return (players.hasOwnProperty(this.target) && players[this.target] !== undefined);
+    }
+    findTarget(objects) {
+        let smallestValue = this.getAgroRadius();
+        let currentP = null;
+        for (let p in objects) {
+            if (objects[p].getObjectType() === index_js_1.ObjectType.PLAYER) {
+                let currentDist = this.getDistance(objects[p]);
+                if (currentDist < smallestValue) {
+                    smallestValue = currentDist;
+                    currentP = objects[p].getId();
+                }
+            }
+        }
+        if (currentP !== null) {
+            this.target = currentP;
+        }
+    }
+    needsTarget() {
+        return this.needTarget;
+    }
+    getAgroRadius() {
+        return this.agroRadius;
     }
 }
 exports.Enemy = Enemy;

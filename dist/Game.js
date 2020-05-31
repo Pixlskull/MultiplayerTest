@@ -127,13 +127,20 @@ class Game {
             Game.bullets[b].isCollided = false;
             quadTree.insert(Game.bullets[b]);
         }
+        for (let e in Game.enemies) {
+            let currEnemy = Game.enemies[e];
+            if (currEnemy.needsTarget()) {
+                let searchedAABB = new index_js_1.AABB(currEnemy.getPosition().x, currEnemy.getPosition().y, currEnemy.getAgroRadius() + 1);
+                currEnemy.findTarget(quadTree.queryRange(searchedAABB));
+            }
+        }
         for (let b in Game.bullets) {
             const cBullet = Game.bullets[b];
             //The source I found this from used +1 for radius, I guess it doesn't hurt to just check a little bit wider
             let searchedAABB = new index_js_1.AABB(cBullet.position.x, cBullet.position.y, cBullet.radius + 1);
             let foundObjects = quadTree.queryRange(searchedAABB);
-            for (let p in combined) {
-                const cObject = combined[p];
+            for (let p in foundObjects) {
+                const cObject = foundObjects[p];
                 //lol the first time I did collision check and then factionCheck
                 //terrible, literally doing more than needed
                 if (cBullet.factionCheck(cObject)) {
@@ -165,6 +172,7 @@ class Game {
     static enemyUpdate(enemy) {
         let currEnemy = Game.enemies[enemy];
         currEnemy.update(Game.players);
+        //Checks if enemy weapon is reloaded, and that the enemy has a proper target
         if (currEnemy.weapon.reloadCheck() && currEnemy.targetCheck(Game.players)) {
             Game.createEnemyBullet(enemy);
         }
@@ -213,7 +221,7 @@ class Game {
 }
 Game.port = 8080;
 Game.frameTime = 1000 / 60;
-Game.enemyLimit = 0;
-Game.safeRadius = 250;
+Game.enemyLimit = 1;
+Game.safeRadius = 100;
 Game.init();
 //# sourceMappingURL=Game.js.map

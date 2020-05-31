@@ -1,5 +1,5 @@
 import { GameMap, GameObject, Vector, Controls, Bullet, 
-    BulletContainer, Weapon, Sniper, SuperWeapon, Sword } from "./index.js";
+    BulletContainer, Weapon, Sniper, SuperWeapon, Sword, ObjectType } from "./index.js";
 
 export class Player extends GameObject {
     public id: string;
@@ -10,7 +10,8 @@ export class Player extends GameObject {
     public hpMax: number;
     public type: string;
     public weapon: Weapon;
-    public position: Vector;
+    //public position: Vector;
+    //public objectType: string;
 
     constructor(position: Vector, id: string) {
         super(position);
@@ -22,8 +23,9 @@ export class Player extends GameObject {
         this.hpMax = this.hp;
         //todo: enum
         this.type = "player"
-        //this.weapon = new SuperWeapon(id);
-        this.weapon = new Sword(id);
+        this.objectType = ObjectType.PLAYER;
+        this.weapon = new SuperWeapon(id);
+        //this.weapon = new Sword(id);
     }
     public update(): void {
         this.position.x += this.velocity.x;

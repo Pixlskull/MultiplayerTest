@@ -15,10 +15,11 @@ class Bullet extends index_js_1.GameObject {
         this.maxVelocity = maxVel;
         this.normalizeDirection();
         this.hp = hp;
-        this.lifetime = 1000;
+        this.lifetime = 400000;
         this.type = "bullet";
         this.damage = 1;
         this.firstTick = true;
+        this.birthTime = new Date();
     }
     update() {
         if (this.firstTick) {
@@ -28,6 +29,16 @@ class Bullet extends index_js_1.GameObject {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
         this.wallCollision();
+        this.lifetimeCheck();
+    }
+    getBirthTimeNumber() {
+        return this.birthTime.getTime();
+    }
+    lifetimeCheck() {
+        const currentTime = new Date();
+        if (currentTime.getTime() - this.getBirthTimeNumber() >= this.lifetime) {
+            this.setIsAlive(false);
+        }
     }
     factionCheck(object) {
         return !(this.id === object.id);

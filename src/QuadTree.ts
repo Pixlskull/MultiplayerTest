@@ -53,7 +53,7 @@ export class QuadTree{
         // }
         // this.gameObjects = [];
     }
-    public queryRange(rangeAABB: AABB) {
+    public queryRange(rangeAABB: AABB): Array<GameObject> {
         //Gets all balls within the AABB range
         let foundObjects: Array<GameObject> = [];
         //I guess intersectsAABB is used because 

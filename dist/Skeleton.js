@@ -1,18 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
-class Zombie extends index_js_1.Enemy {
+class Skeleton extends index_js_1.Enemy {
     constructor(position, id) {
         super(position);
         this.radius = 15;
         this.maxVelocity = 3;
-        this.hp = 10;
-        this.agroRadius = 300;
-        this.type = index_js_1.EnemyType.ZOMBIE;
+        this.hp = 5;
+        this.agroRadius = 500;
+        this.type = index_js_1.EnemyType.SKELETON;
         this.id = id;
         this.weapon = new index_js_1.Gun(this.id, 1, 1000, 5);
         this.target = null;
         this.needTarget = true;
+    }
+    reloadCheck() {
+        return this.weapon.reloadCheck();
     }
     ai(players) {
         //returns true if Zombie has a target
@@ -25,6 +28,9 @@ class Zombie extends index_js_1.Enemy {
             //idk
         }
     }
+    targetCheck(players) {
+        return (players.hasOwnProperty(this.target) && players[this.target] !== undefined);
+    }
     attack(players) {
         let targetVec = players[this.target].position.clone();
         return this.weapon.fireWeapon(this.position.clone(), targetVec.subtract(this.position));
@@ -35,5 +41,5 @@ class Zombie extends index_js_1.Enemy {
         return this.hp;
     }
 }
-exports.Zombie = Zombie;
-//# sourceMappingURL=Zombie.js.map
+exports.Skeleton = Skeleton;
+//# sourceMappingURL=Skeleton.js.map

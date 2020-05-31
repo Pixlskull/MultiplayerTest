@@ -1,5 +1,13 @@
 import { Controls, Vector, GameMap } from "./index.js";
 
+export enum ObjectType {
+    BULLET = "bullet",
+    LINEBULLET = "lineBullet",
+    FASTBULLET = "fastBullet",
+    PLAYER = "player",
+    ZOMBIE = "zombie",
+}
+
 export abstract class GameObject {
     public position: Vector;
     public radius: number
@@ -7,6 +15,7 @@ export abstract class GameObject {
     public maxVelocity: number;
     public isCollided: boolean;
     public isAlive: boolean;
+    public objectType: string;
     public abstract id: string;
     public abstract hp: number;
     public abstract type: string;
@@ -24,6 +33,9 @@ export abstract class GameObject {
     public get velocity(): Vector {
         return this.direction.clone().multiply(this.maxVelocity);
     }
+    public getObjectType(): string {
+        return this.objectType;
+    }
     public getPosition(): Vector {
         return this.position;
     }
@@ -34,11 +46,11 @@ export abstract class GameObject {
         return this.direction;
     }
 
-    public setDirection(a: number | Vector, b?: number): Vector{
-        if (a instanceof Vector || b === null){
+    public setDirection(a: number | Vector, b?: number): Vector {
+        if (a instanceof Vector || b === null) {
             this.direction.set(a)
         }
-        else{
+        else {
             this.direction.set(a, b)
         }
 
@@ -46,14 +58,35 @@ export abstract class GameObject {
         return this.direction;
     }
 
-    public normalizeDirection(): void{
+    public normalizeDirection(): void {
         this.direction.normalize();
     }
 
     public getRadius(): number {
         return this.radius;
     }
-    public getDistance (a: GameObject): number {
+    public getMaxVelocity(): number {
+        return this.maxVelocity;
+    }
+    public getIsAlive(): boolean {
+        return this.isAlive;
+    }
+    public setIsAlive(state: boolean): void {
+        this.isAlive = state;
+    }
+    public getIsCollided(): boolean {
+        return this.isCollided;
+    }
+    public getId(): string {
+        return this.id;
+    }
+    public getHp(): number {
+        return this.hp;
+    }
+    public getDamage(): number {
+        return this.damage;
+    }
+    public getDistance(a: GameObject): number {
         return Math.sqrt((this.position.x - a.position.x) ** 2 + (this.position.y - a.position.y) ** 2);
     }
     public collisionCheck(testObject: GameObject): boolean {
@@ -64,9 +97,6 @@ export abstract class GameObject {
         const totalRadius: number = this.radius + testRadius;
         return (deltaX ** 2 + deltaY ** 2 <= totalRadius ** 2);
     }
-    public getDamage(): number {
-        return this.damage;
-    }
     public updateStatus(): boolean {
         //Returns false if the object has 0 hp
         if (this.hp <= 0) {
@@ -74,23 +104,23 @@ export abstract class GameObject {
         }
         return this.isAlive;
     }
-    public wallCollision(): void{
+    public wallCollision(): void {
         //Default behavior is to have objects "bounce" off walls
         if (this.position.x - this.radius < 0) {
-            this.direction.x = -this.direction.x; 
+            this.direction.x = -this.direction.x;
             this.position.x = 0 + this.radius;
         }
-        else if (this.position.x + this.radius > GameMap.HALF_DIMENSION*2) {
-            this.direction.x = -this.direction.x; 
-            this.position.x = GameMap.HALF_DIMENSION*2 - this.radius;
+        else if (this.position.x + this.radius > GameMap.HALF_DIMENSION * 2) {
+            this.direction.x = -this.direction.x;
+            this.position.x = GameMap.HALF_DIMENSION * 2 - this.radius;
         }
         if (this.position.y - this.radius < 0) {
-            this.direction.y = -this.direction.y; 
+            this.direction.y = -this.direction.y;
             this.position.y = 0 + this.radius;
         }
-        else if (this.position.y + this.radius > GameMap.HALF_DIMENSION*2) {
+        else if (this.position.y + this.radius > GameMap.HALF_DIMENSION * 2) {
             this.direction.y = -this.direction.y;
-            this.position.y = GameMap.HALF_DIMENSION*2 - this.radius;
+            this.position.y = GameMap.HALF_DIMENSION * 2 - this.radius;
         }
     }
     abstract takeDamage(object: GameObject): number;

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const GameObject_js_1 = require("./GameObject.js");
 exports.GameObject = GameObject_js_1.GameObject;
+exports.ObjectType = GameObject_js_1.ObjectType;
 const Controls_js_1 = require("./Controls.js");
 exports.Controls = Controls_js_1.Controls;
 const Vector_js_1 = require("./Vector.js");

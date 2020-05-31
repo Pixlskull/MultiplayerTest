@@ -1,6 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
+var ObjectType;
+(function (ObjectType) {
+    ObjectType["BULLET"] = "bullet";
+    ObjectType["LINEBULLET"] = "lineBullet";
+    ObjectType["FASTBULLET"] = "fastBullet";
+    ObjectType["PLAYER"] = "player";
+    ObjectType["ZOMBIE"] = "zombie";
+})(ObjectType = exports.ObjectType || (exports.ObjectType = {}));
 class GameObject {
     constructor(position) {
         this.position = position;
@@ -13,6 +21,9 @@ class GameObject {
     }
     get velocity() {
         return this.direction.clone().multiply(this.maxVelocity);
+    }
+    getObjectType() {
+        return this.objectType;
     }
     getPosition() {
         return this.position;
@@ -39,6 +50,27 @@ class GameObject {
     getRadius() {
         return this.radius;
     }
+    getMaxVelocity() {
+        return this.maxVelocity;
+    }
+    getIsAlive() {
+        return this.isAlive;
+    }
+    setIsAlive(state) {
+        this.isAlive = state;
+    }
+    getIsCollided() {
+        return this.isCollided;
+    }
+    getId() {
+        return this.id;
+    }
+    getHp() {
+        return this.hp;
+    }
+    getDamage() {
+        return this.damage;
+    }
     getDistance(a) {
         return Math.sqrt(Math.pow((this.position.x - a.position.x), 2) + Math.pow((this.position.y - a.position.y), 2));
     }
@@ -49,9 +81,6 @@ class GameObject {
         const deltaY = this.position.y - testPosition.y;
         const totalRadius = this.radius + testRadius;
         return (Math.pow(deltaX, 2) + Math.pow(deltaY, 2) <= Math.pow(totalRadius, 2));
-    }
-    getDamage() {
-        return this.damage;
     }
     updateStatus() {
         //Returns false if the object has 0 hp
