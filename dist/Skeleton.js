@@ -7,32 +7,34 @@ class Skeleton extends index_js_1.Enemy {
         this.radius = 15;
         this.maxVelocity = 3;
         this.hp = 5;
+        this.damage = 0;
         this.agroRadius = 500;
+        this.firingRange = 200;
         this.type = index_js_1.EnemyType.SKELETON;
         this.id = id;
         this.weapon = new index_js_1.Gun(this.id, 1, 1000, 5);
-        this.target = null;
-        this.needTarget = true;
     }
     reloadCheck() {
         return this.weapon.reloadCheck();
     }
     ai(players) {
         //returns true if Zombie has a target
-        let target = players[this.target];
-        if (players.hasOwnProperty(this.target) && target !== undefined) {
-            this.direction = new index_js_1.Vector(target.position.x - this.position.x, target.position.y - this.position.y);
-            this.normalizeDirection();
+        let target = players[this.getTarget()];
+        if (players.hasOwnProperty(this.getTarget()) && target !== undefined) {
+            if (this.getDistance(target) > 200) {
+                this.direction = new index_js_1.Vector(target.position.x - this.position.x, target.position.y - this.position.y);
+                this.normalizeDirection();
+            }
+            else {
+                this.direction = new index_js_1.Vector(0, 0);
+            }
         }
         else {
             //idk
         }
     }
-    targetCheck(players) {
-        return (players.hasOwnProperty(this.target) && players[this.target] !== undefined);
-    }
     attack(players) {
-        let targetVec = players[this.target].position.clone();
+        let targetVec = players[this.getTarget()].position.clone();
         return this.weapon.fireWeapon(this.position.clone(), targetVec.subtract(this.position));
     }
     takeDamage(object) {

@@ -26,7 +26,7 @@ class Sword extends index_js_1.Weapon {
         const shiftedPos = this.rightSide ? selfPos.add(targetDir.cPerpRotation().scaleTo(50))
             : selfPos.add(targetDir.cCPerpRotation().scaleTo(50));
         let modifiedTargetDir = targetPos.clone().subtract(shiftedPos);
-        bullets[id] = new index_js_1.LineBullet(shiftedPos, modifiedTargetDir, this.owner, 1, 10, 30);
+        bullets[id] = new index_js_1.LineBullet(shiftedPos, modifiedTargetDir, id, this.owner, 1, 10, 30);
         this.rightSide = !this.rightSide;
         return bullets;
     }

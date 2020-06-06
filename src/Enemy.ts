@@ -4,6 +4,20 @@ export enum EnemyType {
     ZOMBIE = "zombie",
     SKELETON = "skeleton",
 }
+export interface EnemyConfig {
+    id: string;
+    position: number;
+    hp: number;
+    agroRadius: number;
+    type: string;
+    weapon: Weapon;
+    radius?: number;
+    maxVelocity?: number;
+    direction?: number;
+    damage?: number;
+    target?: string;
+    needTarget?: boolean;
+}
 export abstract class Enemy extends GameObject {
     //public position: Vector;
     // public radius: number
@@ -15,11 +29,13 @@ export abstract class Enemy extends GameObject {
     public abstract agroRadius: number;
     public abstract type: string;
     public abstract weapon: Weapon;
-    public abstract target: string;
-    public abstract needTarget: boolean;
+    public target: string;
+    public needTarget: boolean;
 
     constructor(position: Vector) {
         super(position);
+        this.target = null;
+        this.needTarget = true;
     }
 
     public update(players: PlayerContainer): void {
@@ -72,11 +88,17 @@ export abstract class Enemy extends GameObject {
             this.target = currentP;
         }
     }
+    public getTarget(): string{
+        return this.target;
+    }
     public needsTarget(): boolean{
         return this.needTarget;
     }
     public getAgroRadius(): number {
         return this.agroRadius;
+    }
+    public getFaction(): string {
+        return this.id;
     }
     abstract ai(players: PlayerContainer): void;
     abstract attack(players: PlayerContainer): void;

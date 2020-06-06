@@ -25,7 +25,7 @@ export class Sniper extends Weapon{
         const id = v4()
         this.bulletCount += 1;
         this.lastFired = new Date();
-        bullets[id] = new FastBullet(selfPos, targetDir, this.owner, 1, this.bulletVelocity)
+        bullets[id] = new FastBullet(selfPos, targetDir, id, this.owner, 1, this.bulletVelocity)
         return bullets;
     }
 

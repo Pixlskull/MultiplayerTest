@@ -77,6 +77,9 @@ export abstract class GameObject {
     public getIsCollided(): boolean {
         return this.isCollided;
     }
+    public setIsCollided(state: boolean): void {
+        this.isCollided = state;
+    }
     public getId(): string {
         return this.id;
     }
@@ -123,5 +126,6 @@ export abstract class GameObject {
             this.position.y = GameMap.HALF_DIMENSION * 2 - this.radius;
         }
     }
+    public abstract getFaction(): string;
     abstract takeDamage(object: GameObject): number;
 }

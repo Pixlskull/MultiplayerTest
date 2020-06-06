@@ -8,9 +8,10 @@ var BulletType;
     BulletType["NORMAL"] = "bullet";
 })(BulletType = exports.BulletType || (exports.BulletType = {}));
 class Bullet extends index_js_1.GameObject {
-    constructor(position, direction, id, hp = 1, maxVel = 10) {
+    constructor(position, direction, id, ownerId, hp = 1, maxVel = 10) {
         super(position);
         this.id = id;
+        this.ownerId = ownerId;
         this.direction = direction;
         this.maxVelocity = maxVel;
         this.normalizeDirection();
@@ -40,8 +41,11 @@ class Bullet extends index_js_1.GameObject {
             this.setIsAlive(false);
         }
     }
+    getFaction() {
+        return this.ownerId;
+    }
     factionCheck(object) {
-        return !(this.id === object.id);
+        return !(this.ownerId === object.getFaction());
     }
     takeDamage(object) {
         this.hp -= (object.getDamage() + 1);

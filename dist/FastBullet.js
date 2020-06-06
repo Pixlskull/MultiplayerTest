@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
 class FastBullet extends index_js_1.Bullet {
-    constructor(position, velocity, id, hp, maxVel = 50) {
-        super(position, velocity, id, hp, maxVel);
+    constructor(position, velocity, id, ownerId, hp, maxVel = 50) {
+        super(position, velocity, id, ownerId, hp, maxVel);
         this.radius = 2;
         this.type = index_js_1.BulletType.FAST;
     }
@@ -11,7 +11,7 @@ class FastBullet extends index_js_1.Bullet {
         const endX = this.position.x + this.velocity.x;
         const endY = this.position.y + this.velocity.y;
         const endPos = new index_js_1.Vector(endX, endY);
-        return this.pointLineDistanceSquared(this.position, endPos, object.position) < Math.pow(object.getRadius(), 2);
+        return this.pointLineDistanceSquared(this.position, endPos, object.getPosition()) < Math.pow(object.getRadius(), 2);
     }
     pointLineDistanceSquared(p1, p2, o1) {
         //https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment

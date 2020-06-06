@@ -102,7 +102,7 @@ class Game {
     public static removeDisconnectedPlayers(): void {
         let playerList: PlayerContainer = {};
         for (let p in Game.players) {
-            if (Game.players[p].connected) {
+            if (Game.players[p].getConnected()) {
                 playerList[p] = Game.players[p];
             }
         }
@@ -111,13 +111,13 @@ class Game {
     public static findLiving(): void {
         let newEnemies: EnemyContainer = {};
         for (let j in Game.enemies) {
-            if (Game.enemies[j].isAlive) {
+            if (Game.enemies[j].getIsAlive()) {
                 newEnemies[j] = Game.enemies[j];
             }
         }
         let newBullets: BulletContainer = {};
         for (let j in Game.bullets) {
-            if (Game.bullets[j].isAlive) {
+            if (Game.bullets[j].getIsAlive()) {
                 newBullets[j] = Game.bullets[j];
             }
         }
@@ -130,17 +130,18 @@ class Game {
         let combined: any = Object.assign({}, Game.players);
         combined = Object.assign(combined, Game.enemies);
         for (let p in combined) {
-            combined[p].isCollided = false;
+            combined[p].setIsCollided(false);
             quadTree.insert(combined[p]);
         }
         for (let b in Game.bullets) {
-            Game.bullets[b].isCollided = false;
+            Game.bullets[b].setIsCollided(false);
             quadTree.insert(Game.bullets[b]);
         }
         for (let e in Game.enemies) {
             let currEnemy = Game.enemies[e];
             if (currEnemy.needsTarget()){
-                let searchedAABB = new AABB(currEnemy.getPosition().x, 
+                let searchedAABB = new AABB(
+                    currEnemy.getPosition().x, 
                     currEnemy.getPosition().y, 
                     currEnemy.getAgroRadius()+ 1
                 );
@@ -159,8 +160,8 @@ class Game {
                 if (cBullet.factionCheck(cObject)) {
                     //do something
                     if (cBullet.collisionCheck(cObject)) {
-                        cBullet.isCollided = true;
-                        cObject.isCollided = true;
+                        cBullet.setIsCollided(true);
+                        cObject.setIsCollided(true);
                         cBullet.takeDamage(cObject);
                         cObject.takeDamage(cBullet);
                     }

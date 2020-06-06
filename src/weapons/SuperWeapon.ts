@@ -25,7 +25,7 @@ export class SuperWeapon extends Weapon{
         const id = v4()
         this.bulletCount += 1;
         this.lastFired = new Date();
-        bullets[id] = new FastBullet(selfPos, targetDir.clone(), this.owner, 10, this.bulletVelocity)
+        bullets[id] = new FastBullet(selfPos, targetDir.clone(), id, this.owner, 10, this.bulletVelocity)
         return bullets;
     }
 

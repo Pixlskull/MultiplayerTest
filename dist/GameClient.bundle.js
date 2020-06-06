@@ -33,9 +33,10 @@ var BulletType;
     BulletType["NORMAL"] = "bullet";
 })(BulletType = exports.BulletType || (exports.BulletType = {}));
 class Bullet extends index_js_1.GameObject {
-    constructor(position, direction, id, hp = 1, maxVel = 10) {
+    constructor(position, direction, id, ownerId, hp = 1, maxVel = 10) {
         super(position);
         this.id = id;
+        this.ownerId = ownerId;
         this.direction = direction;
         this.maxVelocity = maxVel;
         this.normalizeDirection();
@@ -65,8 +66,11 @@ class Bullet extends index_js_1.GameObject {
             this.setIsAlive(false);
         }
     }
+    getFaction() {
+        return this.ownerId;
+    }
     factionCheck(object) {
-        return !(this.id === object.id);
+        return !(this.ownerId === object.getFaction());
     }
     takeDamage(object) {
         this.hp -= (object.getDamage() + 1);
@@ -108,6 +112,8 @@ var EnemyType;
 class Enemy extends index_js_1.GameObject {
     constructor(position) {
         super(position);
+        this.target = null;
+        this.needTarget = true;
     }
     update(players) {
         this.ai(players);
@@ -155,11 +161,17 @@ class Enemy extends index_js_1.GameObject {
             this.target = currentP;
         }
     }
+    getTarget() {
+        return this.target;
+    }
     needsTarget() {
         return this.needTarget;
     }
     getAgroRadius() {
         return this.agroRadius;
+    }
+    getFaction() {
+        return this.id;
     }
 }
 exports.Enemy = Enemy;
@@ -169,8 +181,8 @@ exports.Enemy = Enemy;
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
 class FastBullet extends index_js_1.Bullet {
-    constructor(position, velocity, id, hp, maxVel = 50) {
-        super(position, velocity, id, hp, maxVel);
+    constructor(position, velocity, id, ownerId, hp, maxVel = 50) {
+        super(position, velocity, id, ownerId, hp, maxVel);
         this.radius = 2;
         this.type = index_js_1.BulletType.FAST;
     }
@@ -178,7 +190,7 @@ class FastBullet extends index_js_1.Bullet {
         const endX = this.position.x + this.velocity.x;
         const endY = this.position.y + this.velocity.y;
         const endPos = new index_js_1.Vector(endX, endY);
-        return this.pointLineDistanceSquared(this.position, endPos, object.position) < Math.pow(object.getRadius(), 2);
+        return this.pointLineDistanceSquared(this.position, endPos, object.getPosition()) < Math.pow(object.getRadius(), 2);
     }
     pointLineDistanceSquared(p1, p2, o1) {
         //https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
@@ -567,6 +579,9 @@ class GameObject {
     getIsCollided() {
         return this.isCollided;
     }
+    setIsCollided(state) {
+        this.isCollided = state;
+    }
     getId() {
         return this.id;
     }
@@ -621,8 +636,8 @@ exports.GameObject = GameObject;
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
 class LineBullet extends index_js_1.Bullet {
-    constructor(position, velocity, id, hp, maxVel = 10, width = 20) {
-        super(position, velocity, id, hp, maxVel);
+    constructor(position, velocity, id, ownerId, hp, maxVel = 10, width = 20) {
+        super(position, velocity, id, ownerId, hp, maxVel);
         this.width = width;
         this.type = index_js_1.BulletType.LINE;
         // const rectCenterX: number = this.position.x + this.velocity.x / 2;
@@ -657,12 +672,11 @@ class LineBullet extends index_js_1.Bullet {
         const rectAngle = Math.atan2(this.direction.y, this.direction.x);
         const rectCenterX = this.rect.centerX;
         const rectCenterY = this.rect.centerY;
-        //console.log("Rect Center Position: ", rectCenterX, rectCenterY, rectAngle);
-        //console.log("Object Position: ", object.position.x, object.position.y);
-        const unrotatedCircleX = Math.cos(rectAngle) * (object.position.x - rectCenterX) -
-            Math.sin(rectAngle) * (object.position.y - rectCenterY) + rectCenterX;
-        const unrotatedCircleY = Math.sin(rectAngle) * (object.position.x - rectCenterX) +
-            Math.cos(rectAngle) * (object.position.y - rectCenterY) + rectCenterY;
+        const objPos = object.getPosition();
+        const unrotatedCircleX = Math.cos(rectAngle) * (objPos.x - rectCenterX) -
+            Math.sin(rectAngle) * (objPos.y - rectCenterY) + rectCenterX;
+        const unrotatedCircleY = Math.sin(rectAngle) * (objPos.x - rectCenterX) +
+            Math.cos(rectAngle) * (objPos.y - rectCenterY) + rectCenterY;
         //console.log("current position: " + this.position.x + " " + this.position.y);
         return this.rectCircleCollision(unrotatedCircleX, unrotatedCircleY, object.getRadius());
     }
@@ -714,12 +728,14 @@ class Player extends index_js_1.GameObject {
         this.connected = true;
         this.maxVelocity = 5;
         this.radius = 15;
-        this.hp = 10;
+        this.hp = 100;
+        this.exp = 0;
+        this.level = 1;
         this.hpMax = this.hp;
         //todo: enum
         this.type = "player";
         this.objectType = index_js_1.ObjectType.PLAYER;
-        this.weapon = new index_js_1.SuperWeapon(id);
+        this.weapon = new index_js_1.Gun(id);
         //this.weapon = new Sword(id);
     }
     update() {
@@ -761,8 +777,14 @@ class Player extends index_js_1.GameObject {
             this.position.y = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
         }
     }
+    getConnected() {
+        return this.connected;
+    }
     disconnect() {
         this.connected = false;
+    }
+    getFaction() {
+        return this.id;
     }
     reloadCheck() {
         return this.weapon.reloadCheck();
@@ -1012,19 +1034,19 @@ class Zombie extends index_js_1.Enemy {
         super(position);
         this.radius = 15;
         this.maxVelocity = 3;
-        this.hp = 10;
+        this.hp = 5;
+        this.damage = 0;
         this.agroRadius = 300;
         this.type = index_js_1.EnemyType.ZOMBIE;
         this.id = id;
         this.weapon = new index_js_1.Gun(this.id, 1, 1000, 5);
-        this.target = null;
-        this.needTarget = true;
     }
     ai(players) {
         //returns true if Zombie has a target
-        let target = players[this.target];
-        if (players.hasOwnProperty(this.target) && target !== undefined) {
-            this.direction = new index_js_1.Vector(target.position.x - this.position.x, target.position.y - this.position.y);
+        const target = players[this.getTarget()];
+        if (players.hasOwnProperty(this.getTarget()) && target !== undefined) {
+            const targetPos = target.getPosition();
+            this.direction = new index_js_1.Vector(targetPos.x - this.position.x, targetPos.y - this.position.y);
             this.normalizeDirection();
         }
         else {
@@ -1032,7 +1054,7 @@ class Zombie extends index_js_1.Enemy {
         }
     }
     attack(players) {
-        let targetVec = players[this.target].position.clone();
+        const targetVec = players[this.getTarget()].position.clone();
         return this.weapon.fireWeapon(this.position.clone(), targetVec.subtract(this.position));
     }
     takeDamage(object) {
@@ -1107,7 +1129,7 @@ class Gun extends index_js_1.Weapon {
         const id = uuid_1.v4();
         this.bulletCount += 1;
         this.lastFired = new Date();
-        bullets[id] = new index_js_1.Bullet(selfPos, new index_js_1.Vector(targetPos.x, targetPos.y), this.owner, 1, this.bulletVelocity);
+        bullets[id] = new index_js_1.Bullet(selfPos, new index_js_1.Vector(targetPos.x, targetPos.y), id, this.owner, 1, this.bulletVelocity);
         return bullets;
     }
 }
@@ -1133,7 +1155,7 @@ class Sniper extends index_js_1.Weapon {
         const id = uuid_1.v4();
         this.bulletCount += 1;
         this.lastFired = new Date();
-        bullets[id] = new index_js_1.FastBullet(selfPos, targetDir, this.owner, 1, this.bulletVelocity);
+        bullets[id] = new index_js_1.FastBullet(selfPos, targetDir, id, this.owner, 1, this.bulletVelocity);
         return bullets;
     }
 }
@@ -1159,7 +1181,7 @@ class SuperWeapon extends index_js_1.Weapon {
         const id = uuid_1.v4();
         this.bulletCount += 1;
         this.lastFired = new Date();
-        bullets[id] = new index_js_1.FastBullet(selfPos, targetDir.clone(), this.owner, 10, this.bulletVelocity);
+        bullets[id] = new index_js_1.FastBullet(selfPos, targetDir.clone(), id, this.owner, 10, this.bulletVelocity);
         return bullets;
     }
 }
@@ -1194,7 +1216,7 @@ class Sword extends index_js_1.Weapon {
         const shiftedPos = this.rightSide ? selfPos.add(targetDir.cPerpRotation().scaleTo(50))
             : selfPos.add(targetDir.cCPerpRotation().scaleTo(50));
         let modifiedTargetDir = targetPos.clone().subtract(shiftedPos);
-        bullets[id] = new index_js_1.LineBullet(shiftedPos, modifiedTargetDir, this.owner, 1, 10, 30);
+        bullets[id] = new index_js_1.LineBullet(shiftedPos, modifiedTargetDir, id, this.owner, 1, 10, 30);
         this.rightSide = !this.rightSide;
         return bullets;
     }

@@ -9,6 +9,8 @@ var EnemyType;
 class Enemy extends index_js_1.GameObject {
     constructor(position) {
         super(position);
+        this.target = null;
+        this.needTarget = true;
     }
     update(players) {
         this.ai(players);
@@ -56,11 +58,17 @@ class Enemy extends index_js_1.GameObject {
             this.target = currentP;
         }
     }
+    getTarget() {
+        return this.target;
+    }
     needsTarget() {
         return this.needTarget;
     }
     getAgroRadius() {
         return this.agroRadius;
+    }
+    getFaction() {
+        return this.id;
     }
 }
 exports.Enemy = Enemy;

@@ -37,7 +37,7 @@ export class Sword extends Weapon{
 
         let modifiedTargetDir: Vector = targetPos.clone().subtract(shiftedPos);
         bullets[id] = new LineBullet(shiftedPos, 
-        modifiedTargetDir, this.owner, 1, 10, 30);
+        modifiedTargetDir, id, this.owner, 1, 10, 30);
         this.rightSide = !this.rightSide;
         return bullets;
     }

@@ -62,6 +62,9 @@ class GameObject {
     getIsCollided() {
         return this.isCollided;
     }
+    setIsCollided(state) {
+        this.isCollided = state;
+    }
     getId() {
         return this.id;
     }

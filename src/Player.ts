@@ -1,5 +1,5 @@
 import { GameMap, GameObject, Vector, Controls, Bullet, 
-    BulletContainer, Weapon, Sniper, SuperWeapon, Sword, ObjectType } from "./index.js";
+    BulletContainer, Weapon, Gun, Sniper, SuperWeapon, Sword, ObjectType } from "./index.js";
 
 export class Player extends GameObject {
     public id: string;
@@ -7,6 +7,8 @@ export class Player extends GameObject {
     public cooldown: number;
     public lastFired: Date;
     public hp: number;
+    public exp: number;
+    public level: number;
     public hpMax: number;
     public type: string;
     public weapon: Weapon;
@@ -19,12 +21,14 @@ export class Player extends GameObject {
         this.connected = true;
         this.maxVelocity = 5;
         this.radius = 15;
-        this.hp = 10;
+        this.hp = 100;
+        this.exp = 0;
+        this.level = 1;
         this.hpMax = this.hp;
         //todo: enum
         this.type = "player"
         this.objectType = ObjectType.PLAYER;
-        this.weapon = new SuperWeapon(id);
+        this.weapon = new Gun(id);
         //this.weapon = new Sword(id);
     }
     public update(): void {
@@ -67,11 +71,16 @@ export class Player extends GameObject {
             this.position.y = GameMap.HALF_DIMENSION*2 - this.radius;
         }
     }
-
+    public getConnected(): boolean {
+        return this.connected;
+    }
     public disconnect(): void {
         this.connected = false;
     }
 
+    public getFaction(): string{
+        return this.id;
+    }
     public reloadCheck(): boolean {
         return this.weapon.reloadCheck();
     }

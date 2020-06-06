@@ -9,8 +9,8 @@ export class FastBullet extends Bullet{
     public radius: number;
     public type: string;
 
-    constructor(position: Vector, velocity: Vector, id: string, hp: number, maxVel: number = 50){
-        super(position, velocity, id, hp, maxVel);
+    constructor(position: Vector, velocity: Vector, id: string, ownerId: string, hp: number, maxVel: number = 50){
+        super(position, velocity, id, ownerId, hp, maxVel);
         this.radius = 2;
         this.type = BulletType.FAST;
     }
@@ -19,7 +19,7 @@ export class FastBullet extends Bullet{
         const endX = this.position.x + this.velocity.x;
         const endY = this.position.y + this.velocity.y;
         const endPos = new Vector(endX, endY);
-        return this.pointLineDistanceSquared(this.position, endPos, object.position) < object.getRadius()**2;
+        return this.pointLineDistanceSquared(this.position, endPos, object.getPosition()) < object.getRadius()**2;
     }
     public pointLineDistanceSquared(p1: Vector, p2: Vector, o1: Vector): number{
         //https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment

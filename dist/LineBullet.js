@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("./index.js");
 class LineBullet extends index_js_1.Bullet {
-    constructor(position, velocity, id, hp, maxVel = 10, width = 20) {
-        super(position, velocity, id, hp, maxVel);
+    constructor(position, velocity, id, ownerId, hp, maxVel = 10, width = 20) {
+        super(position, velocity, id, ownerId, hp, maxVel);
         this.width = width;
         this.type = index_js_1.BulletType.LINE;
         // const rectCenterX: number = this.position.x + this.velocity.x / 2;
@@ -38,12 +38,11 @@ class LineBullet extends index_js_1.Bullet {
         const rectAngle = Math.atan2(this.direction.y, this.direction.x);
         const rectCenterX = this.rect.centerX;
         const rectCenterY = this.rect.centerY;
-        //console.log("Rect Center Position: ", rectCenterX, rectCenterY, rectAngle);
-        //console.log("Object Position: ", object.position.x, object.position.y);
-        const unrotatedCircleX = Math.cos(rectAngle) * (object.position.x - rectCenterX) -
-            Math.sin(rectAngle) * (object.position.y - rectCenterY) + rectCenterX;
-        const unrotatedCircleY = Math.sin(rectAngle) * (object.position.x - rectCenterX) +
-            Math.cos(rectAngle) * (object.position.y - rectCenterY) + rectCenterY;
+        const objPos = object.getPosition();
+        const unrotatedCircleX = Math.cos(rectAngle) * (objPos.x - rectCenterX) -
+            Math.sin(rectAngle) * (objPos.y - rectCenterY) + rectCenterX;
+        const unrotatedCircleY = Math.sin(rectAngle) * (objPos.x - rectCenterX) +
+            Math.cos(rectAngle) * (objPos.y - rectCenterY) + rectCenterY;
         //console.log("current position: " + this.position.x + " " + this.position.y);
         return this.rectCircleCollision(unrotatedCircleX, unrotatedCircleY, object.getRadius());
     }

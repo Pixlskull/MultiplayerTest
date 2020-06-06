@@ -10,12 +10,14 @@ class Player extends index_js_1.GameObject {
         this.connected = true;
         this.maxVelocity = 5;
         this.radius = 15;
-        this.hp = 10;
+        this.hp = 100;
+        this.exp = 0;
+        this.level = 1;
         this.hpMax = this.hp;
         //todo: enum
         this.type = "player";
         this.objectType = index_js_1.ObjectType.PLAYER;
-        this.weapon = new index_js_1.SuperWeapon(id);
+        this.weapon = new index_js_1.Gun(id);
         //this.weapon = new Sword(id);
     }
     update() {
@@ -57,8 +59,14 @@ class Player extends index_js_1.GameObject {
             this.position.y = index_js_1.GameMap.HALF_DIMENSION * 2 - this.radius;
         }
     }
+    getConnected() {
+        return this.connected;
+    }
     disconnect() {
         this.connected = false;
+    }
+    getFaction() {
+        return this.id;
     }
     reloadCheck() {
         return this.weapon.reloadCheck();

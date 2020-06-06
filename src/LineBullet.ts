@@ -9,8 +9,8 @@ export class LineBullet extends Bullet {
     public type: string;
     public width: number;
 
-    constructor(position: Vector, velocity: Vector, id: string, hp: number, maxVel: number = 10, width: number = 20) {
-        super(position, velocity, id, hp, maxVel);
+    constructor(position: Vector, velocity: Vector, id: string, ownerId: string, hp: number, maxVel: number = 10, width: number = 20) {
+        super(position, velocity, id, ownerId, hp, maxVel);
         this.width = width;
         this.type = BulletType.LINE;
         // const rectCenterX: number = this.position.x + this.velocity.x / 2;
@@ -47,12 +47,11 @@ export class LineBullet extends Bullet {
         const rectAngle: number = Math.atan2(this.direction.y, this.direction.x);
         const rectCenterX: number = this.rect.centerX;
         const rectCenterY: number = this.rect.centerY;
-        //console.log("Rect Center Position: ", rectCenterX, rectCenterY, rectAngle);
-        //console.log("Object Position: ", object.position.x, object.position.y);
-        const unrotatedCircleX: number = Math.cos(rectAngle) * (object.position.x - rectCenterX) -
-            Math.sin(rectAngle) * (object.position.y - rectCenterY) + rectCenterX;
-        const unrotatedCircleY: number = Math.sin(rectAngle) * (object.position.x - rectCenterX) +
-            Math.cos(rectAngle) * (object.position.y - rectCenterY) + rectCenterY;
+        const objPos = object.getPosition();
+        const unrotatedCircleX: number = Math.cos(rectAngle) * (objPos.x - rectCenterX) -
+            Math.sin(rectAngle) * (objPos.y - rectCenterY) + rectCenterX;
+        const unrotatedCircleY: number = Math.sin(rectAngle) * (objPos.x - rectCenterX) +
+            Math.cos(rectAngle) * (objPos.y - rectCenterY) + rectCenterY;
         //console.log("current position: " + this.position.x + " " + this.position.y);
         return this.rectCircleCollision(unrotatedCircleX, unrotatedCircleY, object.getRadius());
     }

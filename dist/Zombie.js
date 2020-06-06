@@ -6,19 +6,19 @@ class Zombie extends index_js_1.Enemy {
         super(position);
         this.radius = 15;
         this.maxVelocity = 3;
-        this.hp = 10;
+        this.hp = 5;
+        this.damage = 0;
         this.agroRadius = 300;
         this.type = index_js_1.EnemyType.ZOMBIE;
         this.id = id;
         this.weapon = new index_js_1.Gun(this.id, 1, 1000, 5);
-        this.target = null;
-        this.needTarget = true;
     }
     ai(players) {
         //returns true if Zombie has a target
-        let target = players[this.target];
-        if (players.hasOwnProperty(this.target) && target !== undefined) {
-            this.direction = new index_js_1.Vector(target.position.x - this.position.x, target.position.y - this.position.y);
+        const target = players[this.getTarget()];
+        if (players.hasOwnProperty(this.getTarget()) && target !== undefined) {
+            const targetPos = target.getPosition();
+            this.direction = new index_js_1.Vector(targetPos.x - this.position.x, targetPos.y - this.position.y);
             this.normalizeDirection();
         }
         else {
@@ -26,7 +26,7 @@ class Zombie extends index_js_1.Enemy {
         }
     }
     attack(players) {
-        let targetVec = players[this.target].position.clone();
+        const targetVec = players[this.getTarget()].position.clone();
         return this.weapon.fireWeapon(this.position.clone(), targetVec.subtract(this.position));
     }
     takeDamage(object) {

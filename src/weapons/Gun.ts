@@ -25,7 +25,7 @@ export class Gun extends Weapon {
         const id = v4()
         this.bulletCount += 1;
         this.lastFired = new Date();
-        bullets[id] = new Bullet(selfPos, new Vector(targetPos.x, targetPos.y), this.owner, 1, this.bulletVelocity)
+        bullets[id] = new Bullet(selfPos, new Vector(targetPos.x, targetPos.y), id, this.owner, 1, this.bulletVelocity)
         return bullets;
     }
 

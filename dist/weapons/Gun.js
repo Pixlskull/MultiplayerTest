@@ -17,7 +17,7 @@ class Gun extends index_js_1.Weapon {
         const id = uuid_1.v4();
         this.bulletCount += 1;
         this.lastFired = new Date();
-        bullets[id] = new index_js_1.Bullet(selfPos, new index_js_1.Vector(targetPos.x, targetPos.y), this.owner, 1, this.bulletVelocity);
+        bullets[id] = new index_js_1.Bullet(selfPos, new index_js_1.Vector(targetPos.x, targetPos.y), id, this.owner, 1, this.bulletVelocity);
         return bullets;
     }
 }

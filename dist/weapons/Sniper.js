@@ -17,7 +17,7 @@ class Sniper extends index_js_1.Weapon {
         const id = uuid_1.v4();
         this.bulletCount += 1;
         this.lastFired = new Date();
-        bullets[id] = new index_js_1.FastBullet(selfPos, targetDir, this.owner, 1, this.bulletVelocity);
+        bullets[id] = new index_js_1.FastBullet(selfPos, targetDir, id, this.owner, 1, this.bulletVelocity);
         return bullets;
     }
 }
